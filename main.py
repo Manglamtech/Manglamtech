@@ -248,7 +248,8 @@ def vendor_registration():
         phone_no=data.get("phone_no")
         event=data.get("event")
         gst_no=data.get("gst_no")
-        print(vendor_id,organization_name,person_name,full_address,email_id,phone_no,event,gst_no)
+        print(type(vendor_id),type(organization_name),type(person_name),type(full_address),type(email_id),type(password),type(phone_no),type(event),type(gst_no))
+        # print(vendor_id,organization_name,person_name,full_address,email_id,phone_no,event,gst_no)
 
         if vendor_id and organization_name and person_name and full_address and email_id and password and phone_no and event and gst_no:
             existing_user= VENDOR.query.filter_by(email_id=email_id).first()

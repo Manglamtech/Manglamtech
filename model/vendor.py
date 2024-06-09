@@ -3,15 +3,15 @@ from sqlalchemy.exc import IntegrityError
 
 class VENDOR(db.Model):
     vendor_id=db.Column(db.BigInteger(),primary_key=True)
-    organization_name=db.Column(db.String(100))
+    organization_name=db.Column(db.String(50))
     person_name=db.Column(db.String(50))
-    full_address=db.Column(db.String(100))
-    email_id=db.Column(db.String(100),unique=True)
-    password=db.Column(db.String(100))
+    full_address=db.Column(db.String(50))
+    email_id=db.Column(db.String(50),unique=True)
+    password=db.Column(db.Unicode())
     phone_no=db.Column(db.BigInteger())
     # event= db.relationship("EVENT",backref="vendor",lazy=True,)
-    event=db.Column(db.String(100))
-    gst_no=db.Column(db.String(100))
+    event=db.Column(db.String(50))
+    gst_no=db.Column(db.String(50))
 
     def __init__(self,vendor_id,organization_name,person_name,full_address,email_id,password,phone_no,event,gst_no):
         self.vendor_id=vendor_id,
