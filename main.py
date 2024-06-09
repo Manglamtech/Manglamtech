@@ -179,16 +179,18 @@ def logging():
     if data:
         email_id=data.get("email_id")
         password=data.get("password")
-        print(email_id,password)
+        # print(email_id,password)
         if email_id and password:
             # Retrieve user from the database by email
             user=User.query.filter_by(email_id=email_id).first()
             if user:
                 # Check if the provided password matches the hashed password stored in the database
+                hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+                user.password = hashed_password
                 if bcrypt.checkpw(password.encode("utf-8"), user.password):
                     token = jwt.encode({'user': user.email_id, 'exp': datetime.datetime.utcnow(
                 ) + datetime.timedelta(seconds=120)}, app.config['secret_key'])
-                    # return jsonify(token)
+                    return jsonify(token)
                     return jsonify({"message": "Login successful"}), 200
                 else:
                     return jsonify({"message": "Invalid email or password"}), 401
@@ -210,6 +212,8 @@ def update_password():
         if customer_id and email_id and old_password and new_password:
             user=User.query.filter_by(email_id=email_id).first()
             if user:
+                hashed_password = bcrypt.hashpw(old_password.encode("utf-8"), bcrypt.gensalt())
+                user.password = hashed_password
                 if bcrypt.checkpw(old_password.encode("utf-8"),user.password):
                     hashed_new_password = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
                     user.password = hashed_new_password
@@ -366,7 +370,10 @@ def vender_logging():
         if email_id and password:
             vendor=VENDOR.query.filter_by(email_id=email_id).first()
             if vendor:
-                if bcrypt.checkpw(password.encode("utf--8"),vendor.password):
+                hashed_password = bcrypt.hashpw(password.encode("utf-8"),bcrypt.gensalt())
+                vendor.password = hashed_password
+                if bcrypt.checkpw(password.encode("utf-8"),vendor.password):
+        
                     return jsonify({"message":"Login successful"}), 200
                 else:
                     return jsonify({"message":"Invalid email or password"}), 401
@@ -386,6 +393,8 @@ def vendor_update_password():
         if vendor_id and email_id and old_password and new_password:
             vendor=VENDOR.query.filter_by(email_id=email_id).first()
             if vendor:
+                hashed_password = bcrypt.hashpw(old_password.encode("utf-8"), bcrypt.gensalt())
+                vendor.password = hashed_password
                 if bcrypt.checkpw(old_password.encode("utf-8"),vendor.password):
                     hashed_new_password = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt().decode("utf-8"))
                     vendor.password = hashed_new_password
