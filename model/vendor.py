@@ -9,9 +9,10 @@ class VENDOR(db.Model):
     email_id=db.Column(db.String(50),unique=True)
     password=db.Column(db.Unicode())
     phone_no=db.Column(db.BigInteger())
-    # event= db.relationship("EVENT",backref="vendor",lazy=True,)
     event=db.Column(db.String(50))
     gst_no=db.Column(db.String(50))
+    
+    # event= db.relationship("EVENT",backref="vendor",lazy=True,)
 
     def __init__(self,vendor_id,organization_name,person_name,full_address,email_id,password,phone_no,event,gst_no):
         self.vendor_id=vendor_id,

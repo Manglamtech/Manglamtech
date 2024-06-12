@@ -5,11 +5,13 @@ from sqlalchemy.exc import IntegrityError
 class EVENT(db.Model):
     event_code= db.Column(db.String(100))
     event= db.Column(db.String(100))
-    # vendor_id=db.Column(db.BigInteger(),primary_key=True)
+    vendor_id=db.Column(db.BigInteger(),primary_key=True)
     customer_id=db.Column(db.BigInteger(),primary_key=True)
-    # customer_id= db.Column(db.BigInteger(), db.ForeignKey("user.customer_id"), primary_key=True)
     booking_status= db.Column(db.Boolean,nullable=False)
+
+    
     # user = db.relationship("User", back_populates="event")
+    # customer_id= db.Column(db.BigInteger(), db.ForeignKey("user.customer_id"), primary_key=True)
 
     
     

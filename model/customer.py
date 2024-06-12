@@ -11,12 +11,12 @@ class User(db.Model):
     email_id=db.Column(db.String(100),unique=True)
     phone_no=db.Column(db.BigInteger())
     full_address=db.Column(db.String(100))
-    # event= db.relationship("EVENT",backref="user",lazy=True)
     event=db.Column(db.String(60))
     password=db.Column(db.Unicode())
     created_at=db.Column(db.String(50))
     lastupdated=db.Column(db.String(50))
 
+    # event= db.relationship("EVENT",backref="user",lazy=True)
     def __init__(self,customer_id,name,email_id,phone_no,full_address,event,password,created_at,lastupdated):
         self.customer_id= customer_id
         self.name= name
