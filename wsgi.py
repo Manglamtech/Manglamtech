@@ -30,6 +30,10 @@ app.register_blueprint(booking_bp,url_prefix="/booking")
 from app.auth import bp as auth_bp
 app.register_blueprint(auth_bp)
 
+from app.currentbooking import bp as currentbooking_bp
+app.register_blueprint(currentbooking_bp)
+
+
 
 if __name__ == '__main__':
     create_app()
