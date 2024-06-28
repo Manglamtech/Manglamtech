@@ -5,9 +5,10 @@ import bcrypt
 # from app.customer import Blueprint as bp
 import datetime
 from . import bp
+from app.auth.routes import token_required
 
 
-@bp.route("/customer/registration",methods=["POST"])
+@bp.route("/customer/registration",methods=["POST"],endpoint="customer_registration")
 def registration():
     current_date=str(datetime.datetime.now())
     data=request.get_json()
@@ -53,7 +54,8 @@ def registration():
     else:
         return jsonify({"message": "No data provided"}),
 
-@bp.route("/users",methods=["GET"])
+@bp.route("/users",methods=["GET"], endpoint="get_users")
+@token_required
 def get_users():
     users =User.query.all()
     result=[]
@@ -75,7 +77,9 @@ def get_users():
     return jsonify(result), 200
 
 
-@bp.route("/users/<customer_id>", methods=["GET"])
+@bp.route("/users/<customer_id>", methods=["GET"],endpoint="get_user_by_id")
+@token_required
+
 def get_user_by_id(customer_id):
 
     user= User.query.filter_by(customer_id=customer_id).first()
@@ -96,7 +100,8 @@ def get_user_by_id(customer_id):
     else:
         return jsonify({"message": "User not found"}), 404
     
-@bp.route("/users/<customer_id>", methods=["PUT"])
+@bp.route("/users/<customer_id>", methods=["PUT"],endpoint="update_user")
+@token_required
 def update_user(customer_id):
     current_date=str(datetime.datetime.now())
 
@@ -120,7 +125,8 @@ def update_user(customer_id):
     else:
         return jsonify({"message": "User not found"}), 404
 
-@bp.route("/users/<customer_id>",methods=["DELETE"])
+@bp.route("/users/<customer_id>",methods=["DELETE"],endpoint="user_delete")
+@token_required
 def user_delete(customer_id):
     user = User.query.filter_by(customer_id=customer_id).first()
     if user:

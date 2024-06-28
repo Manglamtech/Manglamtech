@@ -11,19 +11,26 @@ from . import bp
 app = Flask(__name__)
 app.config['secret_key'] = "this is secret"
 
-
 def token_required(f):
     def decorated(*args, **kwargs):
-        # token = request.args.get('token')
-        token = request.headers['Authorization'].split()[1]
-        if not token:
-            return jsonify({'error': 'token is missing'}), 403
+        auth_header = request.headers.get('Authorization')
+        # print(auth_header)
+        if auth_header:
+            try:
+                token = auth_header.split()[1]
+            except IndexError:
+                return jsonify({'error': 'Token format is invalid'}), 400
+        else:
+            return jsonify({'error':'Token is missing'}), 403
+
         try:
             jwt.decode(token, app.config['secret_key'], algorithms="HS256")
         except Exception as error:
-            return jsonify({'error': 'token is invalid/expired'})
+           return jsonify({'error': 'token is invalid/expired'})
         return f(*args, **kwargs)
+
     return decorated
+
 
 @bp.route("/logging",methods=["POST"])
 def logging():

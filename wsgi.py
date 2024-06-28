@@ -22,7 +22,7 @@ def create_app():
 
 
     app.register_blueprint(customer_bp,url_prefix="/customer")
-
+    
     app.register_blueprint(vendor_bp,url_prefix="/vendor")
 
     app.register_blueprint(event_bp,url_prefix="/event")

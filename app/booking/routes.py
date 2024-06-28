@@ -2,10 +2,14 @@ from app.model.booking import Booking
 from database.database import db
 from flask import request,jsonify
 from . import bp
+from app.auth.routes import token_required
 
 
 
-@bp.route("/booking" ,methods= ["POST"])
+
+
+@bp.route("/booking" ,methods= ["POST"], endpoint="create_booking")
+@token_required
 def create_booking():
     try:
         data = request.json
@@ -18,7 +22,8 @@ def create_booking():
     except Exception as e:
         return jsonify({"status": "Failed", "message": str(e)}), 500
 
-@bp.route("/booking/event",methods=["GET"])
+@bp.route("/booking/event",methods=["GET"],endpoint="get_booking_event")
+@token_required
 def get_booking_event():
     bookings=Booking.query.all()
     result= []
