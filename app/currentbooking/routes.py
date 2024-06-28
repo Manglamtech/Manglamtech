@@ -2,9 +2,10 @@ from app.model.current_booking import Currentbooking
 from database.database import db
 from flask import request,jsonify
 from . import bp
+from app.auth.routes import token_required
 
-
-@bp.route("/currentbooking",methods=["POST"])
+@bp.route("/currentbooking",methods=["POST"],endpoint="create_booking")
+@token_required
 def current_booking():
     try:
         current_booking_data = request.json

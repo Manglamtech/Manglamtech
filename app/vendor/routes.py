@@ -3,9 +3,12 @@ from database.database import db
 from flask import request,jsonify
 import bcrypt
 from . import bp
+from app.auth.routes import token_required
 
 
-@bp.route("/vendor/registration",methods=["POST"])
+
+@bp.route("/vendor/registration",methods=["POST"],endpoint="vendor_registration")
+
 def vendor_registration():
     data= request.get_json()
     if data:
@@ -52,7 +55,8 @@ def vendor_registration():
     else:
         return jsonify({"message": "No data provided"}), 400 
 
-@bp.route("/vendors",methods=["GET"])
+@bp.route("/vendors",methods=["GET"],endpoint="get_vendors")
+@token_required
 def get_vendor():
     vendors=VENDOR.query.all()
     result=[]
@@ -71,7 +75,8 @@ def get_vendor():
         result.append(vendor_data)
     return jsonify(result), 200
 
-@bp.route("/vendors/<vendor_id>",methods=["GET"])
+@bp.route("/vendors/<vendor_id>",methods=["GET"],endpoint="get_vendor_by_id")
+@token_required
 def get_vendor_by_id(vendor_id):
     vendor = VENDOR.query.filter_by(vendor_id=vendor_id).first()
     if vendor:
@@ -90,7 +95,8 @@ def get_vendor_by_id(vendor_id):
     else:
         return jsonify({"message":"Vendor not found"}), 400
 
-@bp.route("/vendors/<vendor_id>",methods=["PUT"])
+@bp.route("/vendors/<vendor_id>",methods=["PUT"],endpoint="update_vendor")
+@token_required
 def update_vendor(vendor_id):
     data=request.get_json()
     vendor=VENDOR.query.filter_by(vendor_id=vendor_id).first()
@@ -112,7 +118,8 @@ def update_vendor(vendor_id):
     else:
         return jsonify({"message": "Vendor not found"}), 404
     
-@bp.route("/vendors/<vendor_id>",methods=["DELETE"])
+@bp.route("/vendors/<vendor_id>",methods=["DELETE"],endpoint="delete_vendor")
+@token_required
 def vender_delete(vendor_id):
     vendor=VENDOR.query.filter_by(vendor_id=vendor_id).first()
     if vendor:

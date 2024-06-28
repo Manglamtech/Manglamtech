@@ -2,10 +2,12 @@ from app.model.event import EVENT
 from database.database import db
 from flask import request,jsonify
 from . import bp
+from app.auth.routes import token_required
 
 
 
-@bp.route("/create/event",methods=["POST"])
+@bp.route("/create/event",methods=["POST"], endpoint="create_event")
+@token_required
 def create_event():
     try:
         order_data = request.json
@@ -20,7 +22,8 @@ def create_event():
         return jsonify({"status": "Failed", "message": str(e)}), 500
 
     
-@bp.route('/events', methods=['GET'])
+@bp.route('/events', methods=['GET'],endpoint="get_all_events")
+@token_required
 def get_all_events():
     
     events = EVENT.query.all()
@@ -36,7 +39,8 @@ def get_all_events():
         output.append(event_data)
     return jsonify({'events': output})
 
-@bp.route('/events/<int:customer_id>', methods=['GET'])
+@bp.route('/events/<int:customer_id>', methods=['GET'],endpoint="get_event")
+@token_required
 def get_event(customer_id):
     event = EVENT.query.filter_by(customer_id=customer_id).first()
     if not event:
@@ -50,7 +54,8 @@ def get_event(customer_id):
     }
     return jsonify({'event': event_data})
 
-@bp.route('/events/<int:customer_id>', methods=['PUT'])
+@bp.route('/events/<int:customer_id>', methods=['PUT'],endpoint="update_event")
+@token_required
 def update_event(customer_id):
     data = request.get_json()
     event = EVENT.query.filter_by(customer_id=customer_id).first()
@@ -64,7 +69,8 @@ def update_event(customer_id):
     db.session.commit()
     return jsonify({'message': 'Event updated successfully'})
 
-@bp.route('/events/<int:customer_id>', methods=['DELETE'])
+@bp.route('/events/<int:customer_id>', methods=['DELETE'],endpoint="event_delete")
+@token_required
 def delete_event(customer_id):
     event = EVENT.query.filter_by(customer_id=customer_id).first()
     if not event:
