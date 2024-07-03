@@ -2,24 +2,22 @@ from app.model.event import EVENT
 from database.database import db
 from flask import request,jsonify
 from . import bp
-from app.auth.routes import token_required
+from app.auth.routes import token_required,secret_key
 import jwt
 
 
 @bp.route("/create/event",methods=["POST"], endpoint="create_event")
-# @token_required
+@token_required
 def create_event():
     try:
         order_data = request.json
-        # print(order_data)
         auth_header = request.headers.get('Authorization')
-        # print(auth_header)
         payload=auth_header.split(" ")[1]
-        print(payload)
-    
-    
-        entry = EVENT(**order_data)
-
+        # print(payload)
+        token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+        # print(token)
+        cs_id= token["customer_id"]
+        entry=EVENT(event_code=order_data.get("event_code"),event=order_data.get("event"),customer_id=cs_id,vendor_id=order_data.get("vendor_id"),booking_status=order_data.get("booking_status"))
         
         db.session.add(entry)
         db.session.commit()
@@ -108,7 +106,7 @@ def update_event(customer_id):
     return jsonify({'message': 'Event updated successfully'})
 
 @bp.route('/events/<int:customer_id>', methods=['DELETE'],endpoint="event_delete")
-@token_required
+# @token_required
 def delete_event(customer_id):
     event = EVENT.query.filter_by(customer_id=customer_id).first()
     if not event:
