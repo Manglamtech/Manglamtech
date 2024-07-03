@@ -7,7 +7,7 @@ import bcrypt
 import datetime
 from . import bp
 
-
+secret_key="this is secret"
 app = Flask(__name__)
 app.config['secret_key'] = "this is secret"
 
@@ -47,7 +47,7 @@ def logging():
                 hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
                 user.password = hashed_password
                 if bcrypt.checkpw(password.encode("utf-8"), user.password):
-                    token = jwt.encode({'user': user.email_id, 'exp': datetime.datetime.utcnow(
+                    token = jwt.encode({'user': user.email_id,'customer_id': user.customer_id, 'exp': datetime.datetime.utcnow(
                 ) + datetime.timedelta(seconds=3600)}, app.config['secret_key'])
                     return jsonify(token)
                     # return jsonify({"message": "Login successful"}), 200

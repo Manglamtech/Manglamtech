@@ -3,18 +3,20 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 
 class Booking(db.Model):
-    customer_id = db.Column(db.BigInteger(),primary_key=True)
+    booking_id=db.Column(db.BigInteger(),primary_key=True)
+    customer_id = db.Column(db.BigInteger(), db.ForeignKey("user.customer_id"))
     booking_number = db.Column(db.String(50),unique=True)
     event_details = db.Column(db.Text,nullable=False)
     date_booking = db.Column(db.String(60) , nullable=False)
     date_event = db.Column(db.String(60), nullable=False)
-    vendor_id = db.Column(db.BigInteger(),primary_key=True)
+    vendor_id = db.Column(db.BigInteger(),db.ForeignKey("vendor.vendor_id"))
     confirmation_vendor = db.Column(db.Boolean(),nullable=False)
     confirmation_details= db.Column(db.Text,nullable=False)
     data_cancelation = db.Column(db.Text,nullable=False)
 
 
-    def __init__(self, customer_id, booking_number, event_details, date_booking, date_event, vendor_id, confirmation_vendor, confirmation_details, data_cancelation):
+    def __init__(self,booking_id, customer_id, booking_number, event_details, date_booking, date_event, vendor_id, confirmation_vendor, confirmation_details, data_cancelation):
+        self.booking_id = booking_id
         self.customer_id = customer_id
         self.booking_number = booking_number
         self.event_details = event_details
@@ -28,6 +30,7 @@ class Booking(db.Model):
     
     def to_dict(self):
         return {
+            "booking_id":self.booking_id,
             "customer_id": self.customer_id,
             "booking_number": self.booking_number,
             "event_details": self.event_details,

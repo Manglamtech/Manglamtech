@@ -13,6 +13,7 @@ class VENDOR(db.Model):
     gst_no=db.Column(db.String(50))
     
     events= db.relationship("EVENT",backref="vendor",lazy=True,)
+    bookings = db.relationship("Booking",backref="vendor",lazy=True,)
 
     def __init__(self,vendor_id,organization_name,person_name,full_address,email_id,password,phone_no,event,gst_no):
         self.vendor_id=vendor_id,

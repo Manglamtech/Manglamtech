@@ -3,16 +3,23 @@ from database.database import db
 from flask import request,jsonify
 from . import bp
 from app.auth.routes import token_required
-
+import jwt
 
 
 @bp.route("/create/event",methods=["POST"], endpoint="create_event")
-@token_required
+# @token_required
 def create_event():
     try:
         order_data = request.json
-        print(order_data)
+        # print(order_data)
+        auth_header = request.headers.get('Authorization')
+        # print(auth_header)
+        payload=auth_header.split(" ")[1]
+        print(payload)
+    
+    
         entry = EVENT(**order_data)
+
         
         db.session.add(entry)
         db.session.commit()
@@ -39,6 +46,37 @@ def get_all_events():
         output.append(event_data)
     return jsonify({'events': output})
 
+@bp.route('/get_events', methods=['GET'],endpoint="get_events")
+def get_event():
+    customer_id = request.args.get('customer_id')
+    vendor_id = request.args.get('vendor_id')
+
+    events = []
+    if customer_id:
+        events = EVENT.query.filter_by(customer_id=customer_id).all()
+    elif vendor_id:
+        events = EVENT.query.filter_by(vendor_id=vendor_id).all()
+    
+
+    if not events:
+        return jsonify({'message': 'Event not found'}), 404
+    
+    event_data_list = []
+    for event in events:
+        event_data = {
+            'event_code': event.event_code,
+            'event': event.event,
+            'customer_id': event.customer_id,
+            'vendor_id': event.vendor_id,
+            'booking_status': event.booking_status
+        }
+
+        event_data_list.append(event_data)
+    
+    return jsonify({'event': event_data})
+
+
+
 @bp.route('/events/<int:customer_id>', methods=['GET'],endpoint="get_event")
 @token_required
 def get_event(customer_id):
@@ -49,7 +87,7 @@ def get_event(customer_id):
         'event_code': event.event_code,
         'event': event.event,
         'customer_id': event.customer_id,
-        # 'vendor_id': event.vendor_id,
+        'vendor_id': event.vendor_id,
         'booking_status': event.booking_status
     }
     return jsonify({'event': event_data})

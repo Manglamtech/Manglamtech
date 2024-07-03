@@ -16,6 +16,7 @@ class User(db.Model):
     created_at=db.Column(db.String(50))
     lastupdated=db.Column(db.String(50))
     events= db.relationship("EVENT",backref="user",lazy=True)
+    bookings= db.relationship("Booking",backref="user",lazy=True)
     
     def __init__(self,customer_id,name,email_id,phone_no,full_address,event,password,created_at,lastupdated):
         self.customer_id= customer_id
