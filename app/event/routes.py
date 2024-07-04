@@ -2,8 +2,8 @@ from app.model.event import EVENT
 from database.database import db
 from flask import request,jsonify
 from . import bp
-from app.auth.routes import token_required
-
+from app.auth.routes import token_required,secret_key
+import jwt
 
 
 @bp.route("/create/event",methods=["POST"], endpoint="create_event")
@@ -11,8 +11,13 @@ from app.auth.routes import token_required
 def create_event():
     try:
         order_data = request.json
-        print(order_data)
-        entry = EVENT(**order_data)
+        auth_header = request.headers.get('Authorization')
+        payload=auth_header.split(" ")[1]
+        # print(payload)
+        token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+        # print(token)
+        cs_id= token["customer_id"]
+        entry=EVENT(event_code=order_data.get("event_code"),event=order_data.get("event"),customer_id=cs_id,vendor_id=order_data.get("vendor_id"),booking_status=order_data.get("booking_status"))
         
         db.session.add(entry)
         db.session.commit()
@@ -39,6 +44,37 @@ def get_all_events():
         output.append(event_data)
     return jsonify({'events': output})
 
+@bp.route('/get_events', methods=['GET'],endpoint="get_events")
+def get_event():
+    customer_id = request.args.get('customer_id')
+    vendor_id = request.args.get('vendor_id')
+
+    events = []
+    if customer_id:
+        events = EVENT.query.filter_by(customer_id=customer_id).all()
+    elif vendor_id:
+        events = EVENT.query.filter_by(vendor_id=vendor_id).all()
+    
+
+    if not events:
+        return jsonify({'message': 'Event not found'}), 404
+    
+    event_data_list = []
+    for event in events:
+        event_data = {
+            'event_code': event.event_code,
+            'event': event.event,
+            'customer_id': event.customer_id,
+            'vendor_id': event.vendor_id,
+            'booking_status': event.booking_status
+        }
+
+        event_data_list.append(event_data)
+    
+    return jsonify({'event': event_data})
+
+
+
 @bp.route('/events/<int:customer_id>', methods=['GET'],endpoint="get_event")
 @token_required
 def get_event(customer_id):
@@ -49,7 +85,7 @@ def get_event(customer_id):
         'event_code': event.event_code,
         'event': event.event,
         'customer_id': event.customer_id,
-        # 'vendor_id': event.vendor_id,
+        'vendor_id': event.vendor_id,
         'booking_status': event.booking_status
     }
     return jsonify({'event': event_data})
@@ -70,7 +106,7 @@ def update_event(customer_id):
     return jsonify({'message': 'Event updated successfully'})
 
 @bp.route('/events/<int:customer_id>', methods=['DELETE'],endpoint="event_delete")
-@token_required
+# @token_required
 def delete_event(customer_id):
     event = EVENT.query.filter_by(customer_id=customer_id).first()
     if not event:
