@@ -2,7 +2,7 @@ from database.database import db
 from sqlalchemy.exc import IntegrityError
 
 class VENDOR(db.Model):
-    vendor_id=db.Column(db.BigInteger(),primary_key=True)
+    id=db.Column(db.BigInteger(),primary_key=True)
     organization_name=db.Column(db.String(50))
     person_name=db.Column(db.String(50))
     full_address=db.Column(db.String(50))
@@ -15,8 +15,7 @@ class VENDOR(db.Model):
     events= db.relationship("EVENT",backref="vendor",lazy=True,)
     bookings = db.relationship("Booking",backref="vendor",lazy=True,)
 
-    def __init__(self,vendor_id,organization_name,person_name,full_address,email_id,password,phone_no,event,gst_no):
-        self.vendor_id=vendor_id,
+    def __init__(self,organization_name,person_name,full_address,email_id,password,phone_no,event,gst_no):
         self.organization_name=organization_name,
         self.person_name=person_name,
         self.full_address=full_address,
@@ -29,7 +28,6 @@ class VENDOR(db.Model):
     @staticmethod
     def create_vendor(payload):
         vendor=VENDOR(
-            vendor_id=payload["vendor_id"],
             organization_name=payload["organization_name"],
             person_name=payload["person_name"],
             full_address=payload["full_address"],

@@ -13,7 +13,6 @@ def registration():
     current_date=str(datetime.datetime.now())
     data=request.get_json()
     if data:
-        customer_id=data.get("customer_id")
         name=data.get("name")
         email_id=data.get("email_id")
         phone_no=data.get("phone_no")
@@ -22,8 +21,8 @@ def registration():
         password=data.get("password")
         created_at=current_date
         lastupdated=current_date
-        print(customer_id,name,email_id,phone_no,full_address,event,password,created_at,lastupdated)
-        if customer_id and name and email_id and phone_no and full_address and event and password :
+        print(name,email_id,phone_no,full_address,event,password,created_at,lastupdated)
+        if  name and email_id and phone_no and full_address and event and password :
             existing_user= User.query.filter_by(email_id=email_id).first()
             if existing_user:
                 return jsonify({"message": "User already exists"}), 400
@@ -34,7 +33,7 @@ def registration():
 
                 if User.create_user(
                     {
-                        "customer_id":customer_id,
+                        
                         "name":name,
                         "email_id":email_id,
                         "phone_no":phone_no,
@@ -61,7 +60,7 @@ def get_users():
     result=[]
     for user in users:
         user_data={
-            "customer_id":user.customer_id,
+            "customer_id":user.id,
             "name":user.name,
             "email_id":user.email_id,
             "phone_no":user.phone_no,
@@ -82,10 +81,10 @@ def get_users():
 
 def get_user_by_id(customer_id):
 
-    user= User.query.filter_by(customer_id=customer_id).first()
+    user= User.query.filter_by(id=customer_id).first()
     if user:
         user_data={
-            "customer_id": user.customer_id,
+            "customer_id": user.id,
             "name": user.name,
             "email_id": user.email_id,
             "phone_no": user.phone_no,
@@ -106,7 +105,7 @@ def update_user(customer_id):
     current_date=str(datetime.datetime.now())
 
     data=request.get_json()
-    user= User.query.filter_by(customer_id=customer_id).first()
+    user= User.query.filter_by(id=customer_id).first()
     if user:
         user.name = data.get("name", user.name)
         user.email_id = data.get("email_id", user.email_id)
@@ -128,7 +127,7 @@ def update_user(customer_id):
 @bp.route("/users/<customer_id>",methods=["DELETE"],endpoint="user_delete")
 @token_required
 def user_delete(customer_id):
-    user = User.query.filter_by(customer_id=customer_id).first()
+    user = User.query.filter_by(id=customer_id).first()
     if user:
         try:
             db.session.delete(user)
