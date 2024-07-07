@@ -4,12 +4,12 @@ from datetime import datetime
 
 class Booking(db.Model):
     booking_id=db.Column(db.BigInteger(),primary_key=True)
-    customer_id = db.Column(db.BigInteger(), db.ForeignKey("user.customer_id"))
+    customer_id = db.Column(db.BigInteger(), db.ForeignKey("user.id"))
     booking_number = db.Column(db.String(50),unique=True)
     event_details = db.Column(db.Text,nullable=False)
     date_booking = db.Column(db.String(60) , nullable=False)
     date_event = db.Column(db.String(60), nullable=False)
-    vendor_id = db.Column(db.BigInteger(),db.ForeignKey("vendor.vendor_id"))
+    vendor_id = db.Column(db.BigInteger(),db.ForeignKey("vendor.id"))
     confirmation_vendor = db.Column(db.Boolean(),nullable=False)
     confirmation_details= db.Column(db.Text,nullable=False)
     data_cancelation = db.Column(db.Text,nullable=False)

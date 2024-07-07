@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 
 class User(db.Model):
-    customer_id= db.Column(db.BigInteger(), primary_key=True)
+    id= db.Column(db.BigInteger(), primary_key=True)
     name=db.Column(db.String(100))
     email_id=db.Column(db.String(100),unique=True)
     phone_no=db.Column(db.BigInteger())
@@ -18,8 +18,7 @@ class User(db.Model):
     events= db.relationship("EVENT",backref="user",lazy=True)
     bookings= db.relationship("Booking",backref="user",lazy=True)
     
-    def __init__(self,customer_id,name,email_id,phone_no,full_address,event,password,created_at,lastupdated):
-        self.customer_id= customer_id
+    def __init__(self,name,email_id,phone_no,full_address,event,password,created_at,lastupdated):
         self.name= name
         self.email_id= email_id
         self.phone_no= phone_no
@@ -32,7 +31,6 @@ class User(db.Model):
     @staticmethod
     def create_user(payload):
         user=User(
-            customer_id= payload["customer_id"],
             name= payload["name"],
             email_id= payload["email_id"],
             phone_no= payload["phone_no"],

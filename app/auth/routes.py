@@ -38,16 +38,22 @@ def logging():
     if data:
         email_id=data.get("email_id")
         password=data.get("password")
+        is_vendor=data.get("is_vendor")
+        
         # print(email_id,password)
         if email_id and password:
+            if is_vendor==True:
+                user=VENDOR.query.filter_by(email_id=email_id).first()
+            else:
+
             # Retrieve user from the database by email
-            user=User.query.filter_by(email_id=email_id).first()
+                user=User.query.filter_by(email_id=email_id).first()
             if user:
                 # Check if the provided password matches the hashed password stored in the database
                 hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
                 user.password = hashed_password
                 if bcrypt.checkpw(password.encode("utf-8"), user.password):
-                    token = jwt.encode({'user': user.email_id,'customer_id': user.customer_id, 'exp': datetime.datetime.utcnow(
+                    token = jwt.encode({'user': user.email_id,'id': user.id, 'exp': datetime.datetime.utcnow(
                 ) + datetime.timedelta(seconds=3600)}, app.config['secret_key'])
                     return jsonify(token)
                     # return jsonify({"message": "Login successful"}), 200
