@@ -8,6 +8,7 @@ from app.booking import bp as booking_bp
 from app.auth import bp as auth_bp
 from app.currentbooking import bp as currentbooking_bp
 from app.wishlist import bp as wishlist_bp
+from app.verify_otp import bp as verify_otp_bp
 
 app =  Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -34,6 +35,8 @@ def create_app():
     app.register_blueprint(currentbooking_bp)
 
     app.register_blueprint(wishlist_bp)
+
+    app.register_blueprint(verify_otp_bp)
 
 
 

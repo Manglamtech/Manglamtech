@@ -37,23 +37,32 @@ def logging():
     data=request.get_json()
     if data:
         email_id=data.get("email_id")
+        phone_no = data.get("phone_no")
         password=data.get("password")
         is_vendor=data.get("is_vendor")
         
         # print(email_id,password)
-        if email_id and password:
+        if (email_id or phone_no) and password:
+            user=None
             if is_vendor==True:
-                user=VENDOR.query.filter_by(email_id=email_id).first()
-            else:
+                if email_id:
+                    user=VENDOR.query.filter_by(email_id=email_id).first()
+                elif phone_no:
+                    user = VENDOR.query.filter_by(phone_no=phone_no).first()
 
-            # Retrieve user from the database by email
-                user=User.query.filter_by(email_id=email_id).first()
+            else:
+                if email_id:
+                # Retrieve user from the database by email
+                    user=User.query.filter_by(email_id=email_id).first()
+                elif phone_no:
+                    user = User.query.filter_by(phone_no=phone_no).first()
+                
             if user:
                 # Check if the provided password matches the hashed password stored in the database
                 hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
                 user.password = hashed_password
                 if bcrypt.checkpw(password.encode("utf-8"), user.password):
-                    token = jwt.encode({'user': user.email_id,'id': user.id, 'exp': datetime.datetime.utcnow(
+                    token = jwt.encode({'user': user.email_id if email_id else user.phone_no,'id': user.id, 'exp': datetime.datetime.utcnow(
                 ) + datetime.timedelta(seconds=3600)}, app.config['secret_key'])
                     return jsonify(token)
                     # return jsonify({"message": "Login successful"}), 200
@@ -150,3 +159,30 @@ def vendor_update_password():
 def logout():
     session.clear()
     return jsonify("you are out of the application")
+
+
+@bp.route("/reset_password", methods=["POST"], endpoint="reset_password")
+def reset_password():
+    data = request.get_json()
+    phone_no = data.get("phone_no")
+    email_id = data.get("email_id")
+    password = data.get("password")
+
+    # Example implementation: Update user's password based on phone number
+    user = None
+    if phone_no:
+        user = User.query.filter_by(phone_no=phone_no).first()
+    elif email_id:
+        user = User.query.filter_by(email_id=email_id).first()
+
+    if user:
+        hashed_password= bcrypt.hashpw(
+                    password.encode("utf-8","ignore"),bcrypt.gensalt()
+                )
+
+        # Update user's password
+        user.password=hashed_password
+        db.session.commit()
+        return jsonify({"message": "Password reset successfully"}), 200
+    else:
+        return jsonify({"message": "User not found"}), 404

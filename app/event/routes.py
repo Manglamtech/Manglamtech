@@ -17,6 +17,7 @@ def create_event():
         token = jwt.decode(payload, secret_key, algorithms=['HS256'])
         # print(token)
         cs_id= token["customer_id"]
+        print(cs_id)
         entry=EVENT(event_code=order_data.get("event_code"),event=order_data.get("event"),customer_id=cs_id,vendor_id=order_data.get("vendor_id"),booking_status=order_data.get("booking_status"))
         
         db.session.add(entry)
@@ -114,3 +115,40 @@ def delete_event(customer_id):
     db.session.delete(event)
     db.session.commit()
     return jsonify({'message': 'Event deleted successfully'})
+
+
+@bp.route('/upcoming_events', methods=['GET'])
+def get_upcoming_events():
+    events = EVENT.query.filter_by(booking_status=True).all()
+    output=[]
+    for event in events:
+        events_list = {
+        
+            'event_code': event.event_code,
+            'event': event.event,
+            'vendor_id': event.vendor_id,
+            'customer_id': event.customer_id,
+            # 'booking_status': event.booking_status
+        } 
+        output.append(events_list)    
+    
+    return jsonify({'events': output})
+
+@bp.route("/events/<string:event_name>",methods=["GET"])
+def get_event_type(event_name):
+    events=EVENT.query.filter_by(event=event_name).all()
+    if not events:
+        return jsonify({'message': 'Event not found'}), 404
+    output=[]
+    for event in events:
+        events_list = {
+        
+            'event_code': event.event_code,
+            'event': event.event,
+            'vendor_id': event.vendor_id,
+            'customer_id': event.customer_id,
+            'booking_status': event.booking_status
+        } 
+        output.append(events_list)    
+    
+    return jsonify({'events': output})

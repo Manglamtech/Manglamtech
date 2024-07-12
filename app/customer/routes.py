@@ -14,15 +14,15 @@ def registration():
     data=request.get_json()
     if data:
         name=data.get("name")
-        email_id=data.get("email_id")
         phone_no=data.get("phone_no")
+        email_id=data.get("email_id")
         full_address=data.get("full_address")
-        event=data.get("event")
+        pincode=data.get("pincode")
         password=data.get("password")
         created_at=current_date
         lastupdated=current_date
-        print(name,email_id,phone_no,full_address,event,password,created_at,lastupdated)
-        if  name and email_id and phone_no and full_address and event and password :
+        print(name,email_id,phone_no,full_address,pincode,password,created_at,lastupdated)
+        if  name and email_id and phone_no and full_address and pincode and password :
             existing_user= User.query.filter_by(email_id=email_id).first()
             if existing_user:
                 return jsonify({"message": "User already exists"}), 400
@@ -38,7 +38,7 @@ def registration():
                         "email_id":email_id,
                         "phone_no":phone_no,
                         "full_address":full_address,
-                        "event":event,
+                        "pincode":pincode,
                         "password":hashed_password,
                         "created_at":created_at,
                         "lastupdated":lastupdated,
@@ -65,7 +65,7 @@ def get_users():
             "email_id":user.email_id,
             "phone_no":user.phone_no,
             "full_address":user.full_address,
-            "event":user.event,
+            "pincode":user.pincode,
             # "password":user.password,
             "created_at":user.created_at,
             "lastupdated":user.lastupdated
@@ -89,7 +89,7 @@ def get_user_by_id(customer_id):
             "email_id": user.email_id,
             "phone_no": user.phone_no,
             "full_address": user.full_address,
-            "event": user.event,
+            "pincode": user.pincode,
             # "password":user.password,
             "created_at":user.created_at,
             "lastupdated":user.lastupdated
@@ -111,7 +111,7 @@ def update_user(customer_id):
         user.email_id = data.get("email_id", user.email_id)
         user.phone_no = data.get("phone_no", user.phone_no)
         user.full_address = data.get("full_address", user.full_address)
-        user.event = data.get("event", user.event)
+        user.pincode = data.get("pincode", user.pincode)
         # user.password=data.get("password",user.password)
         user.lastupdated=current_date
 
