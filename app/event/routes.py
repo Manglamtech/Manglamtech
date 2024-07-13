@@ -16,7 +16,7 @@ def create_event():
         # print(payload)
         token = jwt.decode(payload, secret_key, algorithms=['HS256'])
         # print(token)
-        cs_id= token["customer_id"]
+        cs_id= token["id"]
         print(cs_id)
         entry=EVENT(event_code=order_data.get("event_code"),event=order_data.get("event"),customer_id=cs_id,vendor_id=order_data.get("vendor_id"),booking_status=order_data.get("booking_status"))
         
@@ -26,7 +26,7 @@ def create_event():
         return jsonify(entry.to_dict()), 201
     except Exception as e:
         return jsonify({"status": "Failed", "message": str(e)}), 500
-
+ 
     
 @bp.route('/events', methods=['GET'],endpoint="get_all_events")
 @token_required

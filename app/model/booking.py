@@ -13,6 +13,13 @@ class Booking(db.Model):
     confirmation_vendor = db.Column(db.Boolean(),nullable=False)
     confirmation_details= db.Column(db.Text,nullable=False)
     data_cancelation = db.Column(db.Text,nullable=False)
+    # transportation_id= db.Column(db.BigInteger(),db.ForeignKey("transportation.id"))
+    # themeanddecore_id=db.Column(db.BigInteger(),db.ForeignKey("theme_and_decor.id"))
+    # entertainment_id=db.Column(db.BigInteger(),db.ForeignKey("entertainment.id"))
+    # mehendiArtist_id=db.Column(db.BigInteger(),db.ForeignKey("mehendi_artist.id"))
+    # # digital_service_id=db.Column(db.BigInteger(),db.ForeignKey("digital_service.id"))
+    # event_organizer_id=db.Column(db.BigInteger(),db.ForeignKey("event_organizer.id"))
+    # beauty_artisan_id=db.Column(db.BigInteger(),db.ForeignKey("beauty_artisan"))
 
 
     def __init__(self,booking_id, customer_id, booking_number, event_details, date_booking, date_event, vendor_id, confirmation_vendor, confirmation_details, data_cancelation):
