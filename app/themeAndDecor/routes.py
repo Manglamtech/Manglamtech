@@ -2,6 +2,7 @@ from . import bp
 from app.model.themeAndDecore import ThemeAndDecor
 from database.database import db
 from flask import request,jsonify
+import math
 
 
 @bp.route('/themeanddecor', methods=['POST'])
@@ -9,11 +10,16 @@ def add_theme_and_decor():
     data = request.get_json()
     new_theme_and_decor = ThemeAndDecor(
         name=data.get('name'),
+        contact_information=data.get(" contact_information"),
+        experience=data.get("experience"),
         top_picks=data.get('top_picks'),
         price=data.get('price'),
         location=data.get('location'),
         reviews=data.get('reviews', 0.0),
-        distance=data.get('distance')
+        latitude=data.get("latitude"),
+        longitude =data.get("longitude"),
+        availability_status=data.get("availability_status")
+        
     )
     db.session.add(new_theme_and_decor)
     db.session.commit()
@@ -21,23 +27,49 @@ def add_theme_and_decor():
 
 @bp.route('/themeanddecor', methods=['GET'])
 def get_theme_and_decor():
-    top_pick=request.args.get("top_pick")
-    best_review=request.args.get("best_review")
-    near_me=request.args.get("near_me")
-    lowest_price=request.args.get("lowest_price")
-
+    top_picks = request.args.get('top_picks', default=None, type=str)
+    best_review = request.args.get('best_review', default=None, type=float)
+    lowest_price = request.args.get('lowest_price', default=None, type=str)
+    user_lat = request.args.get('lat', default=None, type=float)
+    user_lon = request.args.get('lon', default=None, type=float)
+    
+    max_distance = 10  # Hardcoded maximum distance
+    
     query = ThemeAndDecor.query
+    if top_picks is not None:
+        query = query.filter_by(top_picks=True)
+    
+    if best_review is not None:
+        if 4.0 <= best_review <= 5.0:
+            query = query.filter(ThemeAndDecor.reviews >= best_review)
+        else:
+            return jsonify({'error': 'best_review must be between 4.0 and 5.0'}), 400
+    
+    if lowest_price is not None:
+        query = query.filter(ThemeAndDecor.price <= float(lowest_price))
 
-    if top_pick:
-        query = query.filter(ThemeAndDecor.top_picks>= float(top_pick))
-    if best_review:
-        query = query.filter(ThemeAndDecor.reviews <= best_review)
-    if near_me:
-        query = query.filter(ThemeAndDecor.distance >= float(near_me))
-    if lowest_price:
-        query = query.filter(ThemeAndDecor.price >= float(lowest_price))
+    
 
     themeanddecore=query.all()
-    themeanddecore_list=[service.to_dict() for service in themeanddecore]
-    return jsonify(themeanddecore_list),200
+    if user_lat is not None and user_lon is not None:
+        filtered_theme = []
+        for tm in themeanddecore:
+            tm_lat = tm.latitude  
+            tm_lon = tm.longitude  
+            distance = math.sqrt((user_lat - tm_lat)**2 + (user_lon - tm_lon)**2)
+            if distance <= max_distance:
+                filtered_theme.append(tm)
+        themeanddecore = filtered_theme
+
+    result = [
+        {
+            'name': tm.name,
+            'top_picks': tm.top_picks,
+            'price': tm.price,
+            'location': tm.location,
+            'reviews': tm.reviews,
+        
+        } for tm in themeanddecore
+    ]
     
+    return jsonify(result), 200

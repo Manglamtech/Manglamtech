@@ -20,6 +20,7 @@ class Booking(db.Model):
     # # digital_service_id=db.Column(db.BigInteger(),db.ForeignKey("digital_service.id"))
     # event_organizer_id=db.Column(db.BigInteger(),db.ForeignKey("event_organizer.id"))
     # beauty_artisan_id=db.Column(db.BigInteger(),db.ForeignKey("beauty_artisan"))
+    
 
 
     def __init__(self,booking_id, customer_id, booking_number, event_details, date_booking, date_event, vendor_id, confirmation_vendor, confirmation_details, data_cancelation):

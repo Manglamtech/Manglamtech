@@ -16,11 +16,14 @@ from app.entertainment import bp as entertainment_bp
 from app.themeAndDecor import bp as themeanddecore_bp
 from app.digitai_service import bp as digitalservice_bp
 from app.beautyArtisan import bp as beauty_artican_bp
+from flask_cors import CORS
+
 
 
 
 app =  Flask(__name__)
 app.secret_key = "your_secret_key"
+CORS(app)
 
 def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"]= "postgresql://postgres:shivanichauhan@localhost:5000/app"
@@ -60,6 +63,8 @@ def create_app():
     app.register_blueprint(digitalservice_bp)
 
     app.register_blueprint(beauty_artican_bp)
+
+    
 
     
 

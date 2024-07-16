@@ -9,7 +9,8 @@ class ThemeAndDecor(db.Model):
     price = db.Column(db.Float, nullable=False)
     location = db.Column(db.String(100), nullable=False)
     reviews = db.Column(db.Float, default=0.0)
-    distance = db.Column(db.Float, nullable=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
 
     
     # bookings = db.relationship("Booking",backref="theme_and_decor",lazy=True,)
@@ -22,5 +23,6 @@ class ThemeAndDecor(db.Model):
             "price":self.price,
             "location":self.location,
             "reviews":self.reviews,
-            "distance":self.distance
+            'latitude': self.latitude,
+            'longitude': self.longitude
         }

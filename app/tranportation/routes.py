@@ -2,6 +2,7 @@ from . import bp
 from app.model.transportation import Transportation
 from database.database import db
 from flask import request,jsonify
+import math
 
 
 @bp.route('/transportation', methods=['POST'])
@@ -13,7 +14,9 @@ def add_mehendi_artist():
         price=data.get('price'),
         location=data.get('location'),
         reviews=data.get('reviews'),
-        distance=data.get('distance')
+        latitude=data.get("latitude"),
+        longitude =data.get("longitude")
+        
     )
     db.session.add(transportation_data)
     db.session.commit()
@@ -21,25 +24,55 @@ def add_mehendi_artist():
 
 @bp.route('/transportations', methods=['GET'])
 def get_transportations():
-    top_pick=request.args.get("top_pick")
-    best_review=request.args.get("best_review")
-    near_me=request.args.get("near_me")
-    lowest_price=request.args.get("lowest_price")
+    top_picks = request.args.get('top_picks', default=None, type=str)
+    best_review = request.args.get('best_review', default=None, type=float)
+    lowest_price = request.args.get('lowest_price', default=None, type=str)
+    user_lat = request.args.get('lat', default=None, type=float)
+    user_lon = request.args.get('lon', default=None, type=float)
+    max_distance = 10 
 
     query = Transportation.query
 
-    if top_pick:
-        query = query.filter(Transportation.top_picks>= float(top_pick))
-    if best_review:
-        query = query.filter(Transportation.reviews <= best_review)
-    if near_me:
-        query = query.filter(Transportation.distance >= float(near_me))
-    if lowest_price:
-        query = query.filter(Transportation.price >= float(lowest_price))
+    if top_picks is not None:
+        query = query.filter_by(top_picks=True)
+    
+    if best_review is not None:
+        if 4.0 <= best_review <= 5.0:
+            query = query.filter(Transportation.reviews >= best_review)
+        else:
+            return jsonify({'error': 'best_review must be between 4.0 and 5.0'}), 400
+    
+    if lowest_price is not None:
+        query = query.filter(Transportation.price <= float(lowest_price))
+    
 
+    
     transportation=query.all()
-    transportation_list=[service.to_dict() for service in transportation]
-    return jsonify(transportation_list),200
+    if user_lat is not None and user_lon is not None:
+
+        filtered_transpoart = []
+        for tr in transportation:
+            tr_lat = tr.latitude  
+            tr_lon = tr.longitude  
+            distance = math.sqrt((user_lat - tr_lat)**2 + (user_lon - tr_lon)**2)
+            if distance <= max_distance:
+                filtered_transpoart.append(tr)
+        transportation = filtered_transpoart
+
+    result = [
+        {
+            'name': tr.name,
+            'top_picks': tr.top_picks,
+            'price': tr.price,
+            'location': tr.location,
+            'reviews': tr.reviews,
+        
+        } for tr in transportation
+    ]
+    
+    return jsonify(result), 200
+
+    
 
 
     
@@ -54,6 +87,6 @@ def get_transportation(id):
         'price': transportation.price,
         'location': transportation.location,
         'reviews': transportation.reviews,
-        'distance': transportation.distance
+        
     }
     return jsonify(transportation_data)
