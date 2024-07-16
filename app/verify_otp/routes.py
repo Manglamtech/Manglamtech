@@ -10,10 +10,6 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-# TWILIO_ACCOUNT_SID = 'ACbe0b70cf33344d3820f09fde5c804338'
-# TWILIO_AUTH_TOKEN = '4908d1ad671401ee8e6894327339c036'
-# TWILIO_PHONE_NUMBER = '+19452371655'
-
 
 def send_otp( phone_no):
     otp = random.randint(100000, 999999)
