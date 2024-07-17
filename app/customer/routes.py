@@ -8,7 +8,7 @@ from . import bp
 from app.auth.routes import token_required
 
 
-@bp.route("/customer/registration",methods=["POST"],endpoint="customer_registration")
+@bp.route("/registration",methods=["POST"],endpoint="customer_registration")
 def registration():
     current_date=str(datetime.datetime.now())
     data=request.get_json()
