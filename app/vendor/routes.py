@@ -7,7 +7,7 @@ from app.auth.routes import token_required
 
 
 
-@bp.route("/vendor/registration",methods=["POST"],endpoint="vendor_registration")
+@bp.route("/registration",methods=["POST"],endpoint="vendor_registration")
 
 def vendor_registration():
     data= request.get_json()
