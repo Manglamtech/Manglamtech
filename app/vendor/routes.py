@@ -19,12 +19,12 @@ def vendor_registration():
         email_id=data.get("email_id")
         password=data.get("password")
         phone_no=data.get("phone_no")
-        event=data.get("event")
         gst_no=data.get("gst_no")
-        print(type(id),type(organization_name),type(person_name),type(full_address),type(email_id),type(password),type(phone_no),type(event),type(gst_no))
+
+        print(type(id),type(organization_name),type(person_name),type(full_address),type(email_id),type(password),type(phone_no),type(gst_no))
         # print(vendor_id,organization_name,person_name,full_address,email_id,phone_no,event,gst_no)
 
-        if organization_name and person_name and full_address and email_id and password and phone_no and event and gst_no:
+        if organization_name and person_name and full_address and email_id and password and phone_no :
             existing_user= VENDOR.query.filter_by(email_id=email_id).first()
             if existing_user:
                 return jsonify({"message": "User already exists"}), 400
@@ -43,7 +43,6 @@ def vendor_registration():
                         "email_id":email_id,
                         "password":hashed_password,
                         "phone_no":phone_no,
-                        "event":event,
                         "gst_no":gst_no
                     }
                 ):
@@ -68,7 +67,6 @@ def get_vendor():
             "full_address":vendor.full_address,
             "email_id":vendor.email_id,
             "phone_no":vendor.phone_no,
-            "event":vendor.event,
             "gst_no":vendor.gst_no
         }
 
@@ -87,7 +85,6 @@ def get_vendor_by_id(vendor_id):
             "full_address":vendor.full_address,
             "email_id":vendor.email_id,
             "phone_no":vendor.phone_no,
-            "event":vendor.event,
             "gst_no":vendor.gst_no
         }
 
@@ -106,7 +103,6 @@ def update_vendor(vendor_id):
         vendor.full_address=data.get("full_address",vendor.full_address)
         vendor.email_id=data.get("email_id",vendor.email_id)
         vendor.phone_no=data.get("phone_no",vendor.phone_no)
-        vendor.event=data.get("event",vendor.event)
         vendor.gst_no=data.get("gst_no",vendor.gst_no)
 
         try:
