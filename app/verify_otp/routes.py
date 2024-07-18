@@ -95,9 +95,9 @@ def send_otp_endpoint():
 @bp.route("/verify_email", methods=["POST"],endpoint="verify_email")
 def verify_otp():
     data = request.get_json()
-    email_id = data.get("phone_no")
+    email_id = data.get("email_id")
     otp_email = data.get("otp_email")
-    
+
     valid_otp = OtpEmail.query.filter_by(email_id=email_id, otp_email=otp_email).first()
     if valid_otp:
         valid_time= datetime.datetime.utcnow() - valid_otp.created_at

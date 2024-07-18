@@ -9,24 +9,26 @@ class VENDOR(db.Model):
     email_id=db.Column(db.String(50),unique=True)
     password=db.Column(db.Unicode())
     phone_no=db.Column(db.BigInteger())
-    event=db.Column(db.String(50))
     gst_no=db.Column(db.String(50))
     
-    events= db.relationship("EVENT",backref="vendor",lazy=True,)
+    # events= db.relationship("EVENT",backref="vendor",lazy=True,)
     bookings = db.relationship("Booking",backref="vendor",lazy=True,)
 
-    def __init__(self,organization_name,person_name,full_address,email_id,password,phone_no,event,gst_no):
+    def __init__(self,organization_name,person_name,full_address,email_id,password,phone_no,gst_no):
         self.organization_name=organization_name,
         self.person_name=person_name,
         self.full_address=full_address,
         self.email_id=email_id,
         self.password=password,
         self.phone_no=phone_no,
-        self.event=event,
         self.gst_no=gst_no
 
     @staticmethod
     def create_vendor(payload):
+        gst_no = payload["gst_no"]
+        if gst_no == 0:
+            gst_no = None
+
         vendor=VENDOR(
             organization_name=payload["organization_name"],
             person_name=payload["person_name"],
@@ -34,7 +36,6 @@ class VENDOR(db.Model):
             email_id=payload["email_id"],
             password=payload["password"],
             phone_no=payload["phone_no"],
-            event=payload["event"],
             gst_no=payload["gst_no"],
         )
 
