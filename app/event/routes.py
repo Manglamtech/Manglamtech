@@ -7,19 +7,19 @@ import jwt
 
 
 @bp.route("/create/event",methods=["POST"], endpoint="create_event")
-@token_required
+# @token_required
 def create_event():
     try:
         order_data = request.json
-        auth_header = request.headers.get('Authorization')
-        payload=auth_header.split(" ")[1]
-        # print(payload)
-        token = jwt.decode(payload, secret_key, algorithms=['HS256'])
-        # print(token)
-        cs_id= token["id"]
-        print(cs_id)
-        entry=EVENT(event_code=order_data.get("event_code"),event=order_data.get("event"),customer_id=cs_id,vendor_id=order_data.get("vendor_id"),booking_status=order_data.get("booking_status"))
-        
+        # auth_header = request.headers.get('Authorization')
+        # payload=auth_header.split(" ")[1]
+        # # print(payload)
+        # token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+        # # print(token)
+        # cs_id= token["id"]
+        # print(cs_id)
+        # entry=EVENT(event_code=order_data.get("event_code"),event=order_data.get("event"),customer_id=cs_id,vendor_id=order_data.get("vendor_id"),booking_status=order_data.get("booking_status"))
+        entry=EVENT(event_code=order_data.get("event_code"),event=order_data.get("event"))
         db.session.add(entry)
         db.session.commit()
    
@@ -29,18 +29,19 @@ def create_event():
  
     
 @bp.route('/events', methods=['GET'],endpoint="get_all_events")
-@token_required
+# @token_required
 def get_all_events():
     
     events = EVENT.query.all()
     output = []
     for event in events:
         event_data = {
+            "id":event.id,
             'event_code': event.event_code,
             'event': event.event,
-            'customer_id': event.customer_id,
-            'vendor_id': event.vendor_id,
-            'booking_status': event.booking_status
+            # 'customer_id': event.customer_id,
+            # 'vendor_id': event.vendor_id,
+            # 'booking_status': event.booking_status
         }
         output.append(event_data)
     return jsonify({'events': output})
