@@ -4,6 +4,7 @@ from flask import request,jsonify
 import bcrypt
 from . import bp
 from app.auth.routes import token_required
+from sqlalchemy.exc import IntegrityError
 
 
 
@@ -128,3 +129,38 @@ def vender_delete(vendor_id):
             return jsonify({"message":"Failed to delete vendor"}), 500
     else:
         return jsonify({"message":"Vendor not found"}), 404
+
+
+
+@bp.route('/set_vendor_credentials', methods=['POST'])
+def set_vendor_credentials():
+    data = request.get_json()
+
+    email_id = data.get('email_id')
+    new_username = data.get('person_name')
+    new_password = data.get('password')
+
+    if not email_id or not new_username or not new_password:
+        print(email_id,new_username,new_password)
+        return jsonify({"error": "Missing data"}), 400
+
+    vendor = VENDOR.query.filter_by(email_id=email_id).first()
+
+    if not vendor:
+        return jsonify({"error": "Vendor not found"}), 404
+
+    if VENDOR.query.filter_by(person_name=new_username).first():
+        return jsonify({"error": "Username already taken"}), 409
+
+    vendor.person_name = new_username
+    vendor.password = bcrypt.hashpw(
+                    new_password.encode("utf-8","ignore"),bcrypt.gensalt())
+    
+    try:
+        db.session.commit()
+        return jsonify({"message": "Username and password updated successfully"}), 200
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "An error occurred"}), 500
+    
+
