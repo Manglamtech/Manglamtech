@@ -17,9 +17,7 @@ from app.themeAndDecor import bp as themeanddecore_bp
 from app.digitai_service import bp as digitalservice_bp
 from app.beautyArtisan import bp as beauty_artican_bp
 from flask_cors import CORS
-
-
-
+from app.image import bp as image_bp
 
 app =  Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -64,6 +62,7 @@ def create_app():
 
     app.register_blueprint(beauty_artican_bp)
 
+    app.register_blueprint(image_bp)
     
 
     
