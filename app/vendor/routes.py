@@ -20,12 +20,14 @@ def vendor_registration():
         email_id=data.get("email_id")
         password=data.get("password")
         phone_no=data.get("phone_no")
+        service=data.get("service")
+        location=data.get("location")
         gst_no=data.get("gst_no")
 
         print(type(id),type(organization_name),type(person_name),type(full_address),type(email_id),type(password),type(phone_no),type(gst_no))
         # print(vendor_id,organization_name,person_name,full_address,email_id,phone_no,event,gst_no)
 
-        if organization_name and person_name and full_address and email_id and password and phone_no :
+        if organization_name and person_name and full_address and email_id and password and phone_no and service and location :
             existing_user= VENDOR.query.filter_by(email_id=email_id).first()
             if existing_user:
                 return jsonify({"message": "User already exists"}), 400
@@ -44,6 +46,8 @@ def vendor_registration():
                         "email_id":email_id,
                         "password":hashed_password,
                         "phone_no":phone_no,
+                        "service":service,
+                        "location":location,
                         "gst_no":gst_no
                     }
                 ):
@@ -62,12 +66,14 @@ def get_vendor():
     result=[]
     for vendor in vendors:
         vendor_data={
-            "vendor_id":vendor.vendor_id,
+            "vendor_id":vendor.id,
             "organization_name":vendor.organization_name,
             "person_name":vendor.person_name,
             "full_address":vendor.full_address,
             "email_id":vendor.email_id,
             "phone_no":vendor.phone_no,
+            "service":vendor.service,
+            "location":vendor.location,
             "gst_no":vendor.gst_no
         }
 
@@ -86,6 +92,8 @@ def get_vendor_by_id(vendor_id):
             "full_address":vendor.full_address,
             "email_id":vendor.email_id,
             "phone_no":vendor.phone_no,
+            "service":vendor.service,
+            "location":vendor.location,
             "gst_no":vendor.gst_no
         }
 
