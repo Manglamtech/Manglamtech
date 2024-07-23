@@ -18,6 +18,9 @@ from app.digitai_service import bp as digitalservice_bp
 from app.beautyArtisan import bp as beauty_artican_bp
 from flask_cors import CORS
 from app.image import bp as image_bp
+from app.rating import bp as rating_bp
+from app.foodandcatering import bp as foodcatering_bp
+from app.venu_booking import bp as venu_bp
 
 app =  Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -64,7 +67,11 @@ def create_app():
 
     app.register_blueprint(image_bp)
     
+    app.register_blueprint(rating_bp)
 
+    app.register_blueprint(foodcatering_bp)
+
+    app.register_blueprint(venu_bp)
     
 
 

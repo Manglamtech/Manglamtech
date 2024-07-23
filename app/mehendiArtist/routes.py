@@ -1,6 +1,7 @@
 from . import bp
 from app.model.vendor import VENDOR
 from database.database import db
+from app.model.rating import Rating
 from flask import request,jsonify
 
 
@@ -20,10 +21,14 @@ def get_mehandiartist(service):
         # Create the output list
         output = []
         for mendhiartist in mehendi_artists:
+            ratings = Rating.query.filter_by(vendor_id=mendhiartist.id).all()
+            avg_rating = sum(rating.rating for rating in ratings) / len(ratings) if ratings else None
             mendhiartist_data = {
                 'person_name': mendhiartist.person_name,
                 'email_id': mendhiartist.email_id,
-                'phone_no': mendhiartist.phone_no
+                'phone_no': mendhiartist.phone_no,
+                "location":mendhiartist.location,
+                'average_rating': round(avg_rating, 2) if avg_rating is not None else 'No ratings yet'
             }
             output.append(mendhiartist_data)
         
