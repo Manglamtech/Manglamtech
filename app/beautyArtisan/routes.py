@@ -22,7 +22,8 @@ def get_beautyartisan(service):
             beautyartisan_data = {
                 'person_name':beautyartisan.person_name,
                 'email_id': beautyartisan.email_id,
-                'phone_no': beautyartisan.phone_no
+                'phone_no': beautyartisan.phone_no,
+                "location":beautyartisan.location
             }
             output.append(beautyartisan_data)
         

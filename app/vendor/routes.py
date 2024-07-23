@@ -60,7 +60,7 @@ def vendor_registration():
         return jsonify({"message": "No data provided"}), 400 
 
 @bp.route("/vendors",methods=["GET"],endpoint="get_vendors")
-@token_required
+# @token_required
 def get_vendor():
     vendors=VENDOR.query.all()
     result=[]
@@ -74,16 +74,18 @@ def get_vendor():
             "phone_no":vendor.phone_no,
             "service":vendor.service,
             "location":vendor.location,
-            "gst_no":vendor.gst_no
+            "gst_no":vendor.gst_no,
+            'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings]
+
         }
 
         result.append(vendor_data)
     return jsonify(result), 200
 
 @bp.route("/vendors/<vendor_id>",methods=["GET"],endpoint="get_vendor_by_id")
-@token_required
+# @token_required
 def get_vendor_by_id(vendor_id):
-    vendor = VENDOR.query.filter_by(id=vendor_id).first()
+    vendor = VENDOR.query.get(vendor_id)
     if vendor:
         vendor_data={
             "vendor_id":vendor.id,
@@ -94,7 +96,9 @@ def get_vendor_by_id(vendor_id):
             "phone_no":vendor.phone_no,
             "service":vendor.service,
             "location":vendor.location,
-            "gst_no":vendor.gst_no
+            "gst_no":vendor.gst_no,
+            'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings],
+            'rating': [{'id':rating.id, 'customer_id': rating.customer_id} for rating in vendor.rating]
         }
 
         return jsonify(vendor_data),200
