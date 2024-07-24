@@ -3,8 +3,9 @@ from database.database import db
 from flask import request,jsonify
 import bcrypt
 from . import bp
-from app.auth.routes import token_required
+from app.auth.routes import token_required,secret_key
 from sqlalchemy.exc import IntegrityError
+import jwt
 
 
 
@@ -175,4 +176,37 @@ def set_vendor_credentials():
         db.session.rollback()
         return jsonify({"error": "An error occurred"}), 500
     
+
+@bp.route("/vendorProfile",methods=["GET"],endpoint="get_profile_data")
+@token_required
+def get_profile_data():
+    auth_header = request.headers.get('Authorization')
+    payload=auth_header.split(" ")[1]
+        # print(payload)
+    token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+        # print(token)
+    vendor_id= token["id"]
+    vendor=VENDOR.query.get(vendor_id)
+    if vendor:
+        vendor_data={
+            "vendor_id":vendor.id,
+            "organization_name":vendor.organization_name,
+            "person_name":vendor.person_name,
+            "full_address":vendor.full_address,
+            "email_id":vendor.email_id,
+            "phone_no":vendor.phone_no,
+            "service":vendor.service,
+            "location":vendor.location,
+            "gst_no":vendor.gst_no,
+        }
+        return jsonify(vendor_data),200
+    else:
+        return jsonify({"message":"Vendor not found"}), 400
+
+
+
+
+
+
+
 

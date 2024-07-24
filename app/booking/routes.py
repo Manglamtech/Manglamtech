@@ -73,6 +73,11 @@ def check_availability():
     date_event = data.get('date_event')
     event_details = data.get('event_details')
     location = data.get('location')
+    guest=data.get("guest")
+    menu_description=data.get("menu_description")
+    plates=data.get("plates")
+
+
 
     
     # if not date_event or not event_details or not location:
@@ -84,7 +89,7 @@ def check_availability():
     #     return jsonify({"available": True, "message": "The location is available."}), 200
     
     # Query to check bookings for the given date_event and event_type
-    bookings = Booking.query.filter(Booking.date_event == date_event , Booking.event_details == event_details).all()
+    # bookings = Booking.query.filter(Booking.date_event == date_event , Booking.event_details == event_details).all()
     # booking_list = []
     
     # if bookings:
@@ -97,7 +102,11 @@ def check_availability():
     
     # return jsonify({"bookings": booking_list})
     
-    if bookings:
-        return jsonify({"available": False, "message": "The event is not available."}), 200
-    else:
-        return jsonify({"available": True, "message": "The event is available."}), 200
+    # if bookings:
+        # return jsonify({"available": False, "message": "The booking is not available."}), 200
+    # else:
+        # return jsonify({"available": True, "message": "The booking is available."}), 200
+
+
+
+

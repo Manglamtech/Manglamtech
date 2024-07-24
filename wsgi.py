@@ -21,6 +21,9 @@ from app.image import bp as image_bp
 from app.rating import bp as rating_bp
 from app.foodandcatering import bp as foodcatering_bp
 from app.venu_booking import bp as venu_bp
+from app.notification import bp as notification_bp
+from app.pendingorder import bp as pending_bp
+
 
 app =  Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -72,8 +75,10 @@ def create_app():
     app.register_blueprint(foodcatering_bp)
 
     app.register_blueprint(venu_bp)
-    
 
+    app.register_blueprint(notification_bp)
+    
+    app.register_blueprint(pending_bp)
 
 if __name__ == '__main__':
     create_app()
