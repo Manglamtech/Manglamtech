@@ -7,9 +7,8 @@ from flask import request,jsonify
 from sqlalchemy.exc import IntegrityError
 from app.auth.routes import token_required,secret_key
 import jwt
-
-
-
+import datetime
+from datetime import datetime
 
 
 @bp.route("/update_notification_status", methods=["POST"],endpoint="getting_order")
@@ -24,7 +23,7 @@ def update_order_status():
         if not notification:
             return jsonify({"error": "notification not found"}), 404
 
-        if status:  # If status is true, move to PendingOrder and remove from Notification
+        if status:  
             pending_order = Pendingorder(
                 event_type=notification.event_type,
                 address=notification.address,
@@ -104,3 +103,118 @@ def get_pendingorder():
         }
         output.append(order_data)
     return jsonify({'notifications': output})
+
+
+
+# @bp.route('/upcoming_events', methods=['GET'])
+
+# def get_upcoming_events():
+#     try:
+#         # Get the current date and time
+#         x = datetime.datetime.now()
+
+#         date=(x.strftime("%x"))
+#         time=(x.strftime("%X"))
+
+
+
+
+# # #         # Query the database for upcoming events
+#         upcoming_events = Pendingorder.query.filter(
+#             Pendingorder.date >= date,
+#             Pendingorder.time >= time
+#         ).all()
+
+# # #         # Serialize the event information
+#         output = []
+#         for event in upcoming_events:
+#             event_data = {
+#                 "id": event.id,
+#                 "event_type": event.event_type,
+#                 "address": event.address,
+#                 "enter_preferences": event.enter_preferences,
+#                 "phone_no": event.phone_no,
+#                 "city": event.city,
+#                 "date": event.date,
+#                 "time": event.time,
+#                 "customer_id": event.customer_id,
+#                 "status": event.status
+#             }
+#             output.append(event_data)
+
+#         return jsonify({'upcoming_events': output}), 200
+
+#     except Exception as e:
+#         return jsonify({"status": "Failed", "message": str(e)}), 500
+
+
+
+@bp.route('/upcoming_events', methods=['GET'],endpoint="upcoming_event")
+@token_required
+def get_upcoming_events():
+    try:
+        # Get the current date and time
+        current_datetime = datetime.now()
+
+        upcoming_events = Pendingorder.query.filter(
+            Pendingorder.status == True 
+        ).all()
+        output = []
+        for event in upcoming_events:
+            # Check if the event's date and time are in the future
+            event_datetime = datetime.strptime(f"{event.date} {event.time}", '%Y-%m-%d %H:%M:%S')
+            if event_datetime > current_datetime:
+                event_data = {
+                    "id": event.id,
+                    "event_type": event.event_type,
+                    "address": event.address,
+                    "enter_preferences": event.enter_preferences,
+                    "phone_no": event.phone_no,
+                    "city": event.city,
+                    "date": event.date,
+                    "time": event.time,
+                    "customer_id": event.customer_id,
+                    "status": event.status
+                }
+                output.append(event_data)
+
+        return jsonify({'upcoming_events': output}), 200
+
+    except Exception as e:
+        return jsonify({"status": "Failed", "message": str(e)}), 500
+
+
+@bp.route('/past_events', methods=['GET'],endpoint="past_event")
+@token_required
+def get_past_events():
+    try:
+        current_datetime = datetime.now()
+
+        upcoming_events = Pendingorder.query.filter(
+            Pendingorder.status == True 
+        ).all()
+
+        # Serialize the event information
+        output = []
+        for event in upcoming_events:
+            # Check if the event's date and time are in the future
+            event_datetime = datetime.strptime(f"{event.date} {event.time}", '%Y-%m-%d %H:%M:%S')
+            if event_datetime < current_datetime:
+                event_data = {
+                    "id": event.id,
+                    "event_type": event.event_type,
+                    "address": event.address,
+                    "enter_preferences": event.enter_preferences,
+                    "phone_no": event.phone_no,
+                    "city": event.city,
+                    "date": event.date,
+                    "time": event.time,
+                    "customer_id": event.customer_id,
+                    "status": event.status
+                }
+                output.append(event_data)
+
+        return jsonify({'upcoming_events': output}), 200
+
+    except Exception as e:
+        return jsonify({"status": "Failed", "message": str(e)}), 500
