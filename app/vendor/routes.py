@@ -84,7 +84,7 @@ def get_vendor():
     return jsonify(result), 200
 
 @bp.route("/vendors/<vendor_id>",methods=["GET"],endpoint="get_vendor_by_id")
-# @token_required
+@token_required
 def get_vendor_by_id(vendor_id):
     vendor = VENDOR.query.get(vendor_id)
     if vendor:

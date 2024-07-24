@@ -75,14 +75,6 @@ def logging():
             return jsonify({"message": "No data provided"}), 400
         
         
-        {
-            "user":user.email_id if email_id else user.phone_no,
-        
-            "id":user.id,
-            "exp":datetime.datetime.utcnow( ) + datetime.timedelta(seconds=3600)
-
-        }
-        
 
 @bp.route("/update_password",methods=["POST"])
 @token_required
@@ -165,13 +157,14 @@ def vendor_update_password():
         return jsonify({"message": "No data provided"}), 400
 
 
-@bp.route("/logout",methods=["POST"])
+@bp.route("/logout",methods=["POST"],endpoint="logout")
 def logout():
     session.clear()
     return jsonify("you are out of the application")
 
 
 @bp.route("/reset_password", methods=["POST"], endpoint="reset_password")
+
 def reset_password():
     data = request.get_json()
     phone_no = data.get("phone_no")
@@ -181,9 +174,9 @@ def reset_password():
     # Example implementation: Update user's password based on phone number
     user = None
     if phone_no:
-        user = User.query.filter_by(phone_no=phone_no).first()
+        user = VENDOR.query.filter_by(phone_no=phone_no).first()
     elif email_id:
-        user = User.query.filter_by(email_id=email_id).first()
+        user = VENDOR.query.filter_by(email_id=email_id).first()
 
     if user:
         hashed_password= bcrypt.hashpw(

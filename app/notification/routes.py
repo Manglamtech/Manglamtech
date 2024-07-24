@@ -30,7 +30,7 @@ def get_notification():
         return jsonify({"status": "Failed", "message": str(e)}), 500
     
 
-@bp.route("/getNotification",methods=["get"])
+@bp.route("/getNotification",methods=["get"],endpoint="get_all notification")
 def get_all_notification():
     notifications=Notification.query.all()
     output=[]
@@ -49,4 +49,4 @@ def get_all_notification():
 
         }
         output.append(notification_data)
-    return jsonify({'notifications': output})
+    return jsonify({'notification_data': output})

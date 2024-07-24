@@ -5,7 +5,8 @@ import bcrypt
 # from app.customer import Blueprint as bp
 import datetime
 from . import bp
-from app.auth.routes import token_required
+from app.auth.routes import token_required,secret_key
+import jwt
 
 
 @bp.route("/registration",methods=["POST"],endpoint="customer_registration")
@@ -139,3 +140,31 @@ def user_delete(customer_id):
     else:
         return jsonify({"message": "User not found"}), 404
     
+
+@bp.route("/profile",methods=["GET"],endpoint="get_customer_profile")
+@token_required
+def get_customer_profile():
+    auth_header = request.headers.get('Authorization')
+    payload=auth_header.split(" ")[1]
+    token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+
+    customer_id=token["id"]
+    customer=User.query.get(customer_id)
+    
+    if customer:
+        customer_data={
+            "customer_id": customer.id,
+            "name": customer.name,
+            "email_id": customer.email_id,
+            "phone_no": customer.phone_no,
+            "full_address": customer.full_address,
+            "pincode": customer.pincode,
+            # "password":user.password,
+            "created_at":customer.created_at,
+            "lastupdated":customer.lastupdated
+        }
+        return jsonify(customer_data),200
+    else:
+        return jsonify({"message":"Vendor not found"}), 400
+
+
