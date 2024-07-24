@@ -22,6 +22,7 @@ def get_event_organizer(service):
             avg_rating = sum(rating.rating for rating in ratings) / len(ratings) if ratings else None
             
             event_organizer_data = {
+                "id":eo.id,
                 'person_name': eo.person_name,
                 "email_id":eo.email_id,
                 "phone_no":eo.phone_no,

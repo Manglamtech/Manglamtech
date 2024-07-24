@@ -20,6 +20,7 @@ def get_beautyartisan(service):
         output = []
         for  beautyartisan in beautyArtisan:
             beautyartisan_data = {
+                "id":beautyartisan.id,
                 'person_name':beautyartisan.person_name,
                 'email_id': beautyartisan.email_id,
                 'phone_no': beautyartisan.phone_no,

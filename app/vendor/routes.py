@@ -76,7 +76,7 @@ def get_vendor():
             "service":vendor.service,
             "location":vendor.location,
             "gst_no":vendor.gst_no,
-            'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings]
+            # 'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings]
 
         }
 
@@ -98,8 +98,8 @@ def get_vendor_by_id(vendor_id):
             "service":vendor.service,
             "location":vendor.location,
             "gst_no":vendor.gst_no,
-            'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings],
-            'rating': [{'id':rating.id, 'customer_id': rating.customer_id} for rating in vendor.rating]
+            # 'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings],
+            # 'rating': [{'id':rating.id, 'customer_id': rating.customer_id} for rating in vendor.rating]
         }
 
         return jsonify(vendor_data),200

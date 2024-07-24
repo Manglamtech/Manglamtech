@@ -24,7 +24,7 @@ def get_entertainments(service):
             
 
             entertainment_data = {
-                # "id":entertainment.id,
+                "id":entertainment.id,
                 'person_name': entertainment.person_name,
                 "email_id":entertainment.email_id,
                 "phone_no":entertainment.phone_no,

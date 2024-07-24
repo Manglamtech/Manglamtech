@@ -5,37 +5,33 @@ from app.model.rating import Rating
 from flask import request,jsonify
 
 
-
-@bp.route('/themanddecor/<string:service>', methods=['GET'])
-def get_themanddecor(service):
+@bp.route('/themeanddecore/<string:service>', methods=['GET'])
+def get_themeanddecore(service):
     try:
-        themeanddecore=VENDOR.query.filter_by(service=service).all()
+        theme = VENDOR.query.filter_by(service=service)
+
+        # Apply location filter if provided
         location = request.args.get('location')
         if location:
-            themeanddecore = themeanddecore.filter(VENDOR.location == location)
-
-        themeanddecore=themeanddecore.all()
-
-    
+            theme = theme.filter(VENDOR.location == location)
+        
+        theme = theme.all()
+        
+        # Create the output list
         output = []
-        for themedecore in themeanddecore:
-            ratings = Rating.query.filter_by(vendor_id=themeanddecore.id).all()
+        for themedecore in theme:
+            ratings = Rating.query.filter_by(vendor_id=themedecore.id).all()
             avg_rating = sum(rating.rating for rating in ratings) / len(ratings) if ratings else None
-            themeandDecore_data = {
+            themedecore_data = {
                 "id":themedecore.id,
-                'person_name':themedecore.person_name,
-                "email_id":themedecore.email_id,
-                "phone_no":themedecore.phone_no,
-                "location":themeanddecore.location,
+                'person_name': themedecore.person_name,
+                'email_id': themedecore.email_id,
+                'phone_no': themedecore.phone_no,
+                "location":themedecore.location,
                 'average_rating': round(avg_rating, 2) if avg_rating is not None else 'No ratings yet'
-                # 'top_picks': entertainment.top_picks,
-                # 'price': entertainment.price,
-                # 'location': entertainment.location,
-                # 'reviews': entertainment.reviews,
-                
             }
-            output.append(themeandDecore_data)
-    
-        return jsonify({'themeAndDecore': output})
+            output.append(themedecore_data)
+        
+        return jsonify({'foodAndCatering': output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

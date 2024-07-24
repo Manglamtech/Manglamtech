@@ -23,6 +23,7 @@ def get_mehandiartist(service):
             ratings = Rating.query.filter_by(vendor_id=foodAndCatering.id).all()
             avg_rating = sum(rating.rating for rating in ratings) / len(ratings) if ratings else None
             foodAndCatering_data = {
+                "id":foodAndCatering.id,
                 'person_name': foodAndCatering.person_name,
                 'email_id': foodAndCatering.email_id,
                 'phone_no': foodAndCatering.phone_no,
