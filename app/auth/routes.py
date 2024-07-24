@@ -62,6 +62,7 @@ def logging():
                 hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
                 user.password = hashed_password
                 if bcrypt.checkpw(password.encode("utf-8"), user.password):
+
                     token = jwt.encode({'user': user.email_id if email_id else user.phone_no,'id': user.id, 'exp': datetime.datetime.utcnow(
                 ) + datetime.timedelta(seconds=3600)}, app.config['secret_key'])
                     return jsonify(token)
@@ -72,6 +73,15 @@ def logging():
                 return jsonify({"message": "Missing email or password"}), 400
         else:
             return jsonify({"message": "No data provided"}), 400
+        
+        
+        {
+            "user":user.email_id if email_id else user.phone_no,
+        
+            "id":user.id,
+            "exp":datetime.datetime.utcnow( ) + datetime.timedelta(seconds=3600)
+
+        }
         
 
 @bp.route("/update_password",methods=["POST"])
