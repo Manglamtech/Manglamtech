@@ -28,6 +28,7 @@ def get_transportation(service):
                 'person_name':transportation.person_name,
                 "email_id":transportation.email_id,
                 "phone_no":transportation.phone_no,
+                "location":transportation.location,
                 'average_rating': round(avg_rating, 2) if avg_rating is not None else 'No ratings yet'
                 # 'top_picks': entertainment.top_picks,
                 # 'price': entertainment.price,

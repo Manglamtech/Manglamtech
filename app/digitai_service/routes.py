@@ -35,7 +35,7 @@ def get_digitalservice(service):
             if min_rating and (avg_rating is None or avg_rating < float(min_rating)):
                 continue
             digital_service_data = {
-    
+                "id":digitalservice.id,
                 'person_name': digitalservice.person_name,
                 "email_id":digitalservice.email_id,
                 "phone_no":digitalservice.phone_no,

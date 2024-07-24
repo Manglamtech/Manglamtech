@@ -24,6 +24,7 @@ def get_mehandiartist(service):
             ratings = Rating.query.filter_by(vendor_id=mendhiartist.id).all()
             avg_rating = sum(rating.rating for rating in ratings) / len(ratings) if ratings else None
             mendhiartist_data = {
+                "id":mendhiartist.id,
                 'person_name': mendhiartist.person_name,
                 'email_id': mendhiartist.email_id,
                 'phone_no': mendhiartist.phone_no,
