@@ -11,42 +11,6 @@ import datetime
 from datetime import datetime
 
 
-@bp.route("/update_notification_status", methods=["POST"],endpoint="getting_order")
-@token_required
-def update_order_status():
-    try:
-        data = request.json
-        notification_id = data.get('notification_id')
-        status = data.get('status')
-        
-        notification = Notification.query.get(notification_id)
-        if not notification:
-            return jsonify({"error": "notification not found"}), 404
-
-        if status:  
-            pending_order = Pendingorder(
-                event_type=notification.event_type,
-                address=notification.address,
-                enter_preferences=notification.enter_preferences,
-                phone_no=notification.phone_no,
-                city=notification.city,
-                date=notification.date,
-                time=notification.time,
-                customer_id=notification.customer_id,
-                status=True
-            )
-            db.session.add(pending_order)
-            db.session.delete(notification)
-            db.session.commit()
-            return jsonify({"message": "notification status updated and moved to pending orders"}), 200
-        else:  
-            db.session.delete(notification)
-            db.session.commit()
-            return jsonify({"message": "notification removed"}), 200
-    
-    except Exception as e:
-        return jsonify({"status": "Failed", "message": str(e)}), 500
-
 
 
 @bp.route("/pendingorder",methods=["POST"],endpoint="post_pending_order")
