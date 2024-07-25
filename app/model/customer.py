@@ -29,6 +29,16 @@ class User(db.Model):
         self.created_at= created_at 
         self.lastupdated= lastupdated 
 
+    def to_dict(self):
+        return{
+            "id":self.id,
+            "name":self.name,
+            "email_id":self.email_id,
+            "phone_no":self.phone_no,
+            "full_address":self.full_address,
+            "pincode":self.pincode
+        }
+
     @staticmethod
     def create_user(payload):
         user=User(
