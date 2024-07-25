@@ -1,6 +1,7 @@
 from . import bp
 from app.model.pandingorder import Pendingorder
 from app.model.notification import Notification
+from app.model.customer import User
 from database.database import db
 from flask import request,jsonify
 from sqlalchemy.exc import IntegrityError
@@ -70,7 +71,17 @@ def update_order_status():
     
 
 @bp.route("/getNotification",methods=["get"],endpoint="get_all notification")
+@token_required
 def get_all_notification():
+    auth_header = request.headers.get('Authorization')
+    payload=auth_header.split(" ")[1]
+        # print(payload)
+    token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+        # print(token)
+    cs_id= token["id"]
+    user = User.query.get(cs_id)
+    user_data = user.to_dict()
+
     notifications=Notification.query.all()
     output=[]
     for notification in notifications:
@@ -83,9 +94,9 @@ def get_all_notification():
             "city":notification.city,
             " date":notification.date,
             "time":notification.time,
-            "customer_id":notification.customer_id
-
+            # "customer_id":notification.customer_id,
+            
 
         }
         output.append(notification_data)
-    return jsonify({'notification_data': output})
+    return jsonify({'notification_data': output,"user_data":user_data})
