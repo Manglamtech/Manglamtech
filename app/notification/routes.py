@@ -71,20 +71,25 @@ def update_order_status():
     
 
 @bp.route("/getNotification",methods=["get"],endpoint="get_all notification")
-@token_required
+# @token_required
 def get_all_notification():
-    auth_header = request.headers.get('Authorization')
-    payload=auth_header.split(" ")[1]
-        # print(payload)
-    token = jwt.decode(payload, secret_key, algorithms=['HS256'])
-        # print(token)
-    cs_id= token["id"]
-    user = User.query.get(cs_id)
-    user_data = user.to_dict()
+    # auth_header = request.headers.get('Authorization')
+    # payload=auth_header.split(" ")[1]
+    #     # print(payload)
+    # token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+    #     # print(token)
+    # cs_id= token["id"]
+    # user = User.query.get(cs_id)
+    # user_data = user.to_dict()
 
     notifications=Notification.query.all()
     output=[]
     for notification in notifications:
+        customer = User.query.get(notification.customer_id)
+        if customer:
+            customer_data = customer.to_dict()
+        else:
+            customer_data = None
         notification_data={
             "id":notification.id,
             "event_type":notification.event_type,
@@ -92,11 +97,14 @@ def get_all_notification():
             "enter_preferences":notification.enter_preferences,
             "phone_no":notification.phone_no,
             "city":notification.city,
-            " date":notification.date,
+            "date":notification.date,
             "time":notification.time,
-            # "customer_id":notification.customer_id,
+            "customer_id":notification.customer_id,
+            "created_by":customer_data
+
+
             
 
         }
         output.append(notification_data)
-    return jsonify({'notification_data': output,"user_data":user_data})
+    return jsonify({'notification_data': output})
