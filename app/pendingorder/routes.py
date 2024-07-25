@@ -13,44 +13,50 @@ from datetime import datetime
 
 
 
-@bp.route("/pendingorder",methods=["POST"],endpoint="post_pending_order")
-@token_required
-def pendingorder():
+# @bp.route("/pendingorder",methods=["POST"],endpoint="post_pending_order")
+# @token_required
+# def pendingorder():
     
-    try:
-        order_data = request.json
-        auth_header = request.headers.get('Authorization')
-        payload=auth_header.split(" ")[1]
-        # print(payload)
-        token = jwt.decode(payload, secret_key, algorithms=['HS256'])
-        # print(token)
-        cs_id= token["id"]
+#     try:
+#         order_data = request.json
+#         auth_header = request.headers.get('Authorization')
+#         payload=auth_header.split(" ")[1]
+#         # print(payload)
+#         token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+#         # print(token)
+#         cs_id= token["id"]
 
-        entry=Pendingorder(event_type=order_data.get("event_type"),address=order_data.get("address"),enter_preferences=order_data.get("enter_preferences"),phone_no=order_data.get("phone_no"),city=order_data.get("city"),date=order_data.get("date"),time=order_data.get("time"),customer_id=cs_id,status=order_data.get("status"))
-        db.session.add(entry)
-        db.session.commit()
+#         entry=Pendingorder(event_type=order_data.get("event_type"),address=order_data.get("address"),enter_preferences=order_data.get("enter_preferences"),phone_no=order_data.get("phone_no"),city=order_data.get("city"),date=order_data.get("date"),time=order_data.get("time"),customer_id=cs_id,status=order_data.get("status"))
+#         db.session.add(entry)
+#         db.session.commit()
    
-        return jsonify(entry.to_dict()), 201
+#         return jsonify(entry.to_dict()), 201
     
-    except Exception as e:
-        return jsonify({"status": "Failed", "message": str(e)}), 500
+#     except Exception as e:
+#         return jsonify({"status": "Failed", "message": str(e)}), 500
     
 
 @bp.route("/getpendingorder",methods=["GET"],endpoint="get_pending_order")
 @token_required
 def get_pendingorder():
-    auth_header = request.headers.get('Authorization')
-    payload=auth_header.split(" ")[1]
-        # print(payload)
-    token = jwt.decode(payload, secret_key, algorithms=['HS256'])
-        # print(token)
-    cs_id= token["id"]
+    # auth_header = request.headers.get('Authorization')
+    # payload=auth_header.split(" ")[1]
+    #     # print(payload)
+    # token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+    #     # print(token)
+    # cs_id= token["id"]
+
 
      
-    user = User.query.get(cs_id)
+    # user = User.query.get(cs_id)
     orders=Pendingorder.query.all()
     output=[]
     for order in orders:
+        customer = User.query.get(order.customer_id)
+        if customer:
+            customer_data = customer.to_dict()
+        else:
+            customer_data = None
         order_data={
             "id":order.id,
             "event_type":order.event_type,
@@ -61,7 +67,7 @@ def get_pendingorder():
             " date":order.date,
             "time":order.time,
             "customer_id":order.customer_id,
-            "name":user.name
+            "created_by":customer_data
 
 
         }
