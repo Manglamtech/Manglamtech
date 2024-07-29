@@ -76,49 +76,6 @@ def get_pendingorder():
 
 
 
-# @bp.route('/upcoming_events', methods=['GET'])
-
-# def get_upcoming_events():
-#     try:
-#         # Get the current date and time
-#         x = datetime.datetime.now()
-
-#         date=(x.strftime("%x"))
-#         time=(x.strftime("%X"))
-
-
-
-
-# # #         # Query the database for upcoming events
-#         upcoming_events = Pendingorder.query.filter(
-#             Pendingorder.date >= date,
-#             Pendingorder.time >= time
-#         ).all()
-
-# # #         # Serialize the event information
-#         output = []
-#         for event in upcoming_events:
-#             event_data = {
-#                 "id": event.id,
-#                 "event_type": event.event_type,
-#                 "address": event.address,
-#                 "enter_preferences": event.enter_preferences,
-#                 "phone_no": event.phone_no,
-#                 "city": event.city,
-#                 "date": event.date,
-#                 "time": event.time,
-#                 "customer_id": event.customer_id,
-#                 "status": event.status
-#             }
-#             output.append(event_data)
-
-#         return jsonify({'upcoming_events': output}), 200
-
-#     except Exception as e:
-#         return jsonify({"status": "Failed", "message": str(e)}), 500
-
-
-
 @bp.route('/upcoming_events', methods=['GET'],endpoint="upcoming_event")
 @token_required
 def get_upcoming_events():
@@ -132,7 +89,7 @@ def get_upcoming_events():
         output = []
         for event in upcoming_events:
             # Check if the event's date and time are in the future
-            event_datetime = datetime.strptime(f"{event.date} {event.time}", '%Y-%m-%d %H:%M:%S')
+            event_datetime = datetime.strptime(f"{event.date} {event.time}", '%Y-%m-%d %H:%M')
             if event_datetime > current_datetime:
                 event_data = {
                     "id": event.id,
@@ -164,11 +121,10 @@ def get_past_events():
             Pendingorder.status == True 
         ).all()
 
-        # Serialize the event information
         output = []
         for event in upcoming_events:
             # Check if the event's date and time are in the future
-            event_datetime = datetime.strptime(f"{event.date} {event.time}", '%Y-%m-%d %H:%M:%S')
+            event_datetime = datetime.strptime(f"{event.date} {event.time}", '%Y-%m-%d %H:%M')
             if event_datetime < current_datetime:
                 event_data = {
                     "id": event.id,
