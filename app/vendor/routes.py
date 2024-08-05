@@ -6,6 +6,7 @@ from . import bp
 from app.auth.routes import token_required,secret_key
 from sqlalchemy.exc import IntegrityError
 import jwt
+from app.model.rating import Rating
 
 
 
@@ -63,7 +64,19 @@ def vendor_registration():
 @bp.route("/vendors",methods=["GET"],endpoint="get_vendors")
 # @token_required
 def get_vendor():
+
+       
+
+    
     vendors=VENDOR.query.all()
+    # total_rating = 0
+    # count = 0
+    # for r in ratings:
+    #     total_rating += r.rating
+    #     count += 1
+        
+    #     average_rating = total_rating / count if count > 0 else 0
+
     result=[]
     for vendor in vendors:
         vendor_data={
@@ -76,6 +89,7 @@ def get_vendor():
             "service":vendor.service,
             "location":vendor.location,
             "gst_no":vendor.gst_no,
+            # "rating":vendor.rating
             # 'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings]
 
         }

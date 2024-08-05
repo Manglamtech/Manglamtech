@@ -165,6 +165,6 @@ def get_customer_profile():
         }
         return jsonify(customer_data),200
     else:
-        return jsonify({"message":"Vendor not found"}), 400
+        return jsonify({"message":"user not found"}), 400
 
 

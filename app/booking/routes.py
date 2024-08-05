@@ -89,23 +89,23 @@ def check_availability():
     #     return jsonify({"available": True, "message": "The location is available."}), 200
     
     # Query to check bookings for the given date_event and event_type
-    # bookings = Booking.query.filter(Booking.date_event == date_event , Booking.event_details == event_details).all()
-    # booking_list = []
+    bookings = Booking.query.filter(Booking.date_event == date_event , Booking.event_details == event_details).all()
+    booking_list = []
     
-    # if bookings:
-    #     for booking in bookings:
-    #         booking_data = {
-    #             "date_event": booking.date_event,
-    #             "event_details":booking.event_details
-    #         }
-    #         booking_list.append(booking_data)
+    if bookings:
+        for booking in bookings:
+            booking_data = {
+                "date_event": booking.date_event,
+                "event_details":booking.event_details
+            }
+            booking_list.append(booking_data)
     
-    # return jsonify({"bookings": booking_list})
+    return jsonify({"bookings": booking_list})
     
-    # if bookings:
-        # return jsonify({"available": False, "message": "The booking is not available."}), 200
-    # else:
-        # return jsonify({"available": True, "message": "The booking is available."}), 200
+    if bookings:
+        return jsonify({"available": False, "message": "The booking is not available."}), 200
+    else:
+        return jsonify({"available": True, "message": "The booking is available."}), 200
 
 
 
