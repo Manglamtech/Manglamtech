@@ -18,6 +18,8 @@ class User(db.Model):
     # events= db.relationship("EVENT",backref="user",lazy=True)
     bookings= db.relationship("Booking",backref="user",lazy=True)
     rating=db.relationship("Rating",backref="user",lazy=True,)
+    wishlist=db.relationship("WishlistItem",backref="user",lazy=True)
+
     
     def __init__(self,name,email_id,phone_no,full_address,pincode,password,created_at,lastupdated):
         self.name= name
