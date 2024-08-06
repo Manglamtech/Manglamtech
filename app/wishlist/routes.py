@@ -8,6 +8,7 @@ from . import bp
 from app.auth.routes import token_required,secret_key
 import jwt
 from sqlalchemy.exc import IntegrityError
+from app.model.rating import Rating
 
 
 
@@ -127,7 +128,16 @@ def get_all_wishlist_items():
         vendor = VENDOR.query.get(item.vendor_service_id)
         user = User.query.get(item.customer_id)
         if vendor and user:
-            wishlist_info = {
+            ratings = Rating.query.filter_by(vendor_id=vendor.id).all()
+        total_rating = 0
+        count = 0
+        for r in ratings:
+            total_rating += r.rating
+            count += 1
+        
+        average_rating = total_rating / count if count > 0 else 0
+
+        wishlist_info = {
                 "customer_id": item.customer_id,
                 "customer_name": user.name,  # Assuming the User model has a 'name' field
                 "vendor_service_id": item.vendor_service_id,
@@ -138,9 +148,11 @@ def get_all_wishlist_items():
                 "phone_no": vendor.phone_no,
                 "service": vendor.service,
                 "location": vendor.location,
-                "gst_no": vendor.gst_no
+                "gst_no": vendor.gst_no,
+                "rating":average_rating
+
             }
-            all_wishlist_info.append(wishlist_info)
+        all_wishlist_info.append(wishlist_info)
 
     return jsonify({"wishlist": all_wishlist_info}), 200
     

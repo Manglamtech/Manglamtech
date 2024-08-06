@@ -12,6 +12,8 @@ class VENDOR(db.Model):
     service=db.Column(db.String(50))
     location=db.Column(db.String(50))
     gst_no=db.Column(db.String(50))
+    district=db.Column(db.String(50))
+    state=db.Column(db.String(50))
     
     # events= db.relationship("EVENT",backref="vendor",lazy=True,)
     bookings = db.relationship("Booking",backref="vendor",lazy=True,)
@@ -19,7 +21,7 @@ class VENDOR(db.Model):
     wishlist=db.relationship("WishlistItem",backref="vendor",lazy=True)
     
 
-    def __init__(self,organization_name,person_name,full_address,email_id,password,phone_no,service,location,gst_no):
+    def __init__(self,organization_name,person_name,full_address,email_id,password,phone_no,service,location,gst_no,district,state):
         self.organization_name=organization_name,
         self.person_name=person_name,
         self.full_address=full_address,
@@ -28,7 +30,9 @@ class VENDOR(db.Model):
         self.phone_no=phone_no,
         self.service=service,
         self.location=location,
-        self.gst_no=gst_no
+        self.gst_no=gst_no,
+        self.district=district,
+        self.state=state
 
     @staticmethod
     def create_vendor(payload):
@@ -46,6 +50,9 @@ class VENDOR(db.Model):
             service=payload["service"],
             location=payload["location"],
             gst_no=payload["gst_no"],
+            district=payload["district"],
+            state=payload["state"]
+
         )
 
         try:

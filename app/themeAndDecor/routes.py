@@ -22,6 +22,7 @@ def get_themeanddecore(service):
         for themedecore in theme:
             ratings = Rating.query.filter_by(vendor_id=themedecore.id).all()
             avg_rating = sum(rating.rating for rating in ratings) / len(ratings) if ratings else None
+            
             themedecore_data = {
                 "id":themedecore.id,
                 'person_name': themedecore.person_name,
