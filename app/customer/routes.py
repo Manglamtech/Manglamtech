@@ -20,6 +20,8 @@ def registration():
         full_address=data.get("full_address")
         pincode=data.get("pincode")
         password=data.get("password")
+        district=data.get("district")
+        state=data.get("state")
         created_at=current_date
         lastupdated=current_date
         print(name,email_id,phone_no,full_address,pincode,password,created_at,lastupdated)
@@ -41,6 +43,8 @@ def registration():
                         "full_address":full_address,
                         "pincode":pincode,
                         "password":hashed_password,
+                        "district":district,
+                        "state":state,
                         "created_at":created_at,
                         "lastupdated":lastupdated,
                     }
@@ -67,6 +71,8 @@ def get_users():
             "phone_no":user.phone_no,
             "full_address":user.full_address,
             "pincode":user.pincode,
+            "district":user.district,
+            "state":user.state,
             # "password":user.password,
             "created_at":user.created_at,
             "lastupdated":user.lastupdated

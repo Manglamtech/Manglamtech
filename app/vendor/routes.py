@@ -25,6 +25,8 @@ def vendor_registration():
         service=data.get("service")
         location=data.get("location")
         gst_no=data.get("gst_no")
+        district=data.get("district")
+        state=data.get("state")
 
         print(type(id),type(organization_name),type(person_name),type(full_address),type(email_id),type(password),type(phone_no),type(gst_no))
         # print(vendor_id,organization_name,person_name,full_address,email_id,phone_no,event,gst_no)
@@ -50,7 +52,10 @@ def vendor_registration():
                         "phone_no":phone_no,
                         "service":service,
                         "location":location,
-                        "gst_no":gst_no
+                        "gst_no":gst_no,
+                        "district":district,
+                        "state":state
+
                     }
                 ):
                     return jsonify({"message": "User created successfully"}), 201
@@ -64,21 +69,17 @@ def vendor_registration():
 @bp.route("/vendors",methods=["GET"],endpoint="get_vendors")
 # @token_required
 def get_vendor():
-
-       
-
-    
     vendors=VENDOR.query.all()
-    # total_rating = 0
-    # count = 0
-    # for r in ratings:
-    #     total_rating += r.rating
-    #     count += 1
-        
-    #     average_rating = total_rating / count if count > 0 else 0
-
     result=[]
     for vendor in vendors:
+        ratings = Rating.query.filter_by(vendor_id=vendor.id).all()
+        total_rating = 0
+        count = 0
+        for r in ratings:
+            total_rating += r.rating
+            count += 1
+        
+        average_rating = total_rating / count if count > 0 else 0
         vendor_data={
             "vendor_id":vendor.id,
             "organization_name":vendor.organization_name,
@@ -89,7 +90,9 @@ def get_vendor():
             "service":vendor.service,
             "location":vendor.location,
             "gst_no":vendor.gst_no,
-            # "rating":vendor.rating
+            "district":vendor.district,
+            "state":vendor.state,
+            "rating":average_rating
             # 'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings]
 
         }
