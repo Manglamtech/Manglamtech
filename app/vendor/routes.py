@@ -72,14 +72,9 @@ def get_vendor():
     vendors=VENDOR.query.all()
     result=[]
     for vendor in vendors:
-        ratings = Rating.query.filter_by(vendor_id=vendor.id).all()
-        total_rating = 0
-        count = 0
-        for r in ratings:
-            total_rating += r.rating
-            count += 1
+        ratings = [ratings.rating for ratings in vendor.rating]
+        average_rating = sum(ratings) / len(ratings) if ratings else 0
         
-        average_rating = total_rating / count if count > 0 else 0
         vendor_data={
             "vendor_id":vendor.id,
             "organization_name":vendor.organization_name,
@@ -92,7 +87,7 @@ def get_vendor():
             "gst_no":vendor.gst_no,
             "district":vendor.district,
             "state":vendor.state,
-            "rating":average_rating
+            "ratings":average_rating
             # 'bookings': [{'id': booking.booking_id, 'name': booking.event_details} for booking in vendor.bookings]
 
         }

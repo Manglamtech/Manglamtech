@@ -23,6 +23,7 @@ from app.foodandcatering import bp as foodcatering_bp
 from app.venu_booking import bp as venu_bp
 from app.notification import bp as notification_bp
 from app.pendingorder import bp as pending_bp
+from app.feedbox import bp as feedbox_bp
 
 
 app =  Flask(__name__)
@@ -79,6 +80,8 @@ def create_app():
     app.register_blueprint(notification_bp)
     
     app.register_blueprint(pending_bp)
+
+    app.register_blueprint(feedbox_bp)
 
 if __name__ == '__main__':
     create_app()
