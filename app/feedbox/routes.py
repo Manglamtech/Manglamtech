@@ -14,8 +14,8 @@ def add_feedbox():
     email_id = data.get('email_id')
     events = data.get('events')
 
-    if not name or not email_id or not events:
-        return jsonify({"error": "Missing required fields"}), 400
+    if not name or not email_id or not events or not isinstance(events, list):
+        return jsonify({"error": "Missing or invalid required fields"}), 400
 
     feedbox = Feedbox.create_feedbox(name, email_id, events)
 
@@ -28,3 +28,4 @@ def add_feedbox():
         }), 201
     else:
         return jsonify({"error": "Email ID already exists"}), 409
+

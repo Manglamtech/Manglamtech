@@ -62,7 +62,7 @@ def logging():
                 hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
                 user.password = hashed_password
                 if bcrypt.checkpw(password.encode("utf-8"), user.password):
-
+                
                     token = jwt.encode({'user': user.email_id if email_id else user.phone_no,'id': user.id, 'exp': datetime.datetime.utcnow(
                 ) + datetime.timedelta(seconds=3600)}, app.config['secret_key'])
                     return jsonify(token)
