@@ -67,7 +67,7 @@ def vendor_registration():
         return jsonify({"message": "No data provided"}), 400 
 
 @bp.route("/vendors",methods=["GET"],endpoint="get_vendors")
-# @token_required
+@token_required  
 def get_vendor():
     vendors=VENDOR.query.all()
     result=[]
