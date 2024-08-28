@@ -7,7 +7,7 @@ import jwt
 
 
 @bp.route('/feedbox', methods=['POST'],endpoint="add_feedbox")
-@token_required
+# @token_required
 def add_feedbox():
     data = request.get_json()
     name = data.get('name')
