@@ -33,8 +33,8 @@ CORS(app)
 
 def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"]= "postgresql://postgres:shivanichauhan@localhost:5000/app"
-
-    # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///user.db"
+   
+    
     db.init_app(app)
     with app.app_context():
         db.create_all()
