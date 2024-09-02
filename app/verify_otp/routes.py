@@ -1,4 +1,5 @@
 from app.model.otp import OTP
+from app.model.customer import User
 from app.model.otp_email import OtpEmail
 from database.database import db
 from flask import request,jsonify
@@ -113,4 +114,19 @@ def verify_otp():
     
 
 
+@bp.route("/otp_email", methods=["POST"], endpoint="email_otp")
+def send_otp_endpoint():
+    data = request.get_json()
+    email_id = data.get("email_id")
 
+    if not email_id:
+        return jsonify({"message": "email_id is required"}), 400
+
+    # Query the database to check if the email exists
+    user = User.query.filter_by(email_id=email_id).first()
+
+    if not user:
+        return jsonify({"message": "Email does not exist in the database"}), 404
+
+    send_otp_email(email_id)
+    return jsonify({"message": "OTP sent successfully"}), 200
