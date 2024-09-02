@@ -177,8 +177,6 @@ def reset_password():
     is_vendor=data.get("is_vendor")
 
     
-
-    # Example implementation: Update user's password based on phone number
     user = None
     if is_vendor==True:
         if phone_no:
