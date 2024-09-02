@@ -2,6 +2,9 @@ from flask import Flask,request,jsonify,session
 from database.database import db
 from app.model.customer import User
 from app.model.vendor import VENDOR
+from app.model.otp import OTP
+from app.model.otp_email import OtpEmail
+from itsdangerous import URLSafeTimedSerializer
 import jwt
 import bcrypt
 import datetime
@@ -10,6 +13,7 @@ from . import bp
 secret_key="this is secret"
 app = Flask(__name__)
 app.config['secret_key'] = "this is secret"
+serializer = URLSafeTimedSerializer(app.config['secret_key'])
 
 def token_required(f):
     def decorated(*args, **kwargs):
@@ -170,13 +174,24 @@ def reset_password():
     phone_no = data.get("phone_no")
     email_id = data.get("email_id")
     password = data.get("password")
+    is_vendor=data.get("is_vendor")
+
+    
 
     # Example implementation: Update user's password based on phone number
     user = None
-    if phone_no:
-        user = VENDOR.query.filter_by(phone_no=phone_no).first()
-    elif email_id:
-        user = VENDOR.query.filter_by(email_id=email_id).first()
+    if is_vendor==True:
+        if phone_no:
+            user = VENDOR.query.filter_by(phone_no=phone_no).first()
+        elif email_id:
+            user = VENDOR.query.filter_by(email_id=email_id).first()
+    else:
+        if email_id:
+            # Retrieve user from the database by email
+            user=User.query.filter_by(email_id=email_id).first()
+        elif phone_no:
+            user = User.query.filter_by(phone_no=phone_no).first()
+                
 
     if user:
         hashed_password= bcrypt.hashpw(
@@ -189,3 +204,7 @@ def reset_password():
         return jsonify({"message": "Password reset successfully"}), 200
     else:
         return jsonify({"message": "User not found"}), 404
+
+
+
+
