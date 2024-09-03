@@ -201,12 +201,18 @@ def get_profile_data():
     vendor=VENDOR.query.get(vendor_id)
     if vendor:
         data=request.get_json()
-        vendor.organization_name=data.get("organization_name",vendor.organization_name)
-        vendor.person_name=data.get("person_name",vendor.person_name)
-        vendor.full_address=data.get("full_address",vendor.full_address)
-        vendor.email_id=data.get("email_id",vendor.email_id)
-        vendor.phone_no=data.get("phone_no",vendor.phone_no)
-        vendor.gst_no=data.get("gst_no",vendor.gst_no)
+        if data.get("organization_name") is not None:
+            vendor.organization_name=data.get("organization_name",vendor.organization_name)
+        if data.get("person_name") is not None:
+            vendor.person_name=data.get("person_name",vendor.person_name)
+        if data.get("full_address") is not None:
+            vendor.full_address=data.get("full_address",vendor.full_address)
+        if data.get("email_id") is not None:
+            vendor.email_id=data.get("email_id",vendor.email_id)
+        if data.get("phone_no") is not None:
+            vendor.phone_no=data.get("phone_no",vendor.phone_no)
+        if data.get("gst_no") is not None:   
+            vendor.gst_no=data.get("gst_no",vendor.gst_no)
 
         try:
             db.session.commit()

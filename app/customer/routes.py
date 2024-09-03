@@ -187,11 +187,16 @@ def edit_customer_profile():
 
     if user:
         data=request.get_json()
-        user.name = data.get("name", user.name)
-        user.email_id = data.get("email_id", user.email_id)
-        user.phone_no = data.get("phone_no", user.phone_no)
-        user.full_address = data.get("full_address", user.full_address)
-        user.pincode = data.get("pincode", user.pincode)
+        if data.get("name") is not None:
+            user.name = data.get("name", user.name)
+        if data.get("email_id") is not None:
+            user.email_id = data.get("email_id", user.email_id)
+        if data.get("phone_no") is not None:
+            user.phone_no = data.get("phone_no", user.phone_no)
+        if data.get("full_address") is not None:
+            user.full_address = data.get("full_address", user.full_address)
+        if data.get("pincode") is not None:
+            user.pincode = data.get("pincode", user.pincode)
         # user.password=data.get("password",user.password)
         user.lastupdated=current_date
         try:
