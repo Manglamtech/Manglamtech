@@ -174,3 +174,31 @@ def get_customer_profile():
         return jsonify({"message":"user not found"}), 400
 
 
+@bp.route("/profile", methods=["PUT"], endpoint="edit_customer_profile")
+@token_required
+def edit_customer_profile():
+    current_date=str(datetime.datetime.now())
+    auth_header = request.headers.get('Authorization')
+    payload = auth_header.split(" ")[1]
+    token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+
+    customer_id = token["id"]
+    user = User.query.get(customer_id)
+
+    if user:
+        data=request.get_json()
+        user.name = data.get("name", user.name)
+        user.email_id = data.get("email_id", user.email_id)
+        user.phone_no = data.get("phone_no", user.phone_no)
+        user.full_address = data.get("full_address", user.full_address)
+        user.pincode = data.get("pincode", user.pincode)
+        # user.password=data.get("password",user.password)
+        user.lastupdated=current_date
+        try:
+            db.session.commit()
+            return jsonify({"message": "User updated successfully"}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": "Failed to update user"}), 500
+    else:
+        return jsonify({"message": "User not found"}), 404

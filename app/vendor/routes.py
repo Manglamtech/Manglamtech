@@ -188,6 +188,35 @@ def set_vendor_credentials():
         db.session.rollback()
         return jsonify({"error": "An error occurred"}), 500
     
+    
+@bp.route("/vendorProfile",methods=["PUT"],endpoint="Edit_profile_data")
+@token_required
+def get_profile_data():
+    auth_header = request.headers.get('Authorization')
+    payload=auth_header.split(" ")[1]
+        # print(payload)
+    token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+        # print(token)
+    vendor_id= token["id"]
+    vendor=VENDOR.query.get(vendor_id)
+    if vendor:
+        data=request.get_json()
+        vendor.organization_name=data.get("organization_name",vendor.organization_name)
+        vendor.person_name=data.get("person_name",vendor.person_name)
+        vendor.full_address=data.get("full_address",vendor.full_address)
+        vendor.email_id=data.get("email_id",vendor.email_id)
+        vendor.phone_no=data.get("phone_no",vendor.phone_no)
+        vendor.gst_no=data.get("gst_no",vendor.gst_no)
+
+        try:
+            db.session.commit()
+            return jsonify({"message": "Vendor updated successfully"}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"message": "Failed to update vendor"}), 500
+    else:
+        return jsonify({"message": "Vendor not found"}), 404
+
 
 @bp.route("/vendorProfile",methods=["GET"],endpoint="get_profile_data")
 @token_required
@@ -214,11 +243,6 @@ def get_profile_data():
         return jsonify(vendor_data),200
     else:
         return jsonify({"message":"Vendor not found"}), 400
-
-
-
-
-
 
 
 
