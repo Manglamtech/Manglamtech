@@ -31,17 +31,40 @@ def upload_image():
 
         return jsonify({'message': 'Image uploaded successfully', 'image_id': new_image.id}), 200
 
-@bp.route('/get_image', methods=['GET'])
-def get_image():
-    image_id = request.args.get('image_id')
+# @bp.route('/get_image', methods=['GET'])
+# def get_image():
+#     image_id = request.args.get('image_id')
     
-    if not image_id:
-        return jsonify({'error': 'No image ID provided'}), 400
+#     if not image_id:
+#         return jsonify({'error': 'No image ID provided'}), 400
     
-    image = Image.query.get(image_id)
+#     image = Image.query.get(image_id)
     
-    if image:
-        image_path = os.path.join(UPLOAD_FOLDER, image.filename)
-        return send_file(image_path, mimetype='image/jpeg')
-    else:
-        return jsonify({'error': 'Image not found'}), 404
+#     if image:
+#         image_path = os.path.join(UPLOAD_FOLDER, image.filename)
+#         return send_file(image_path, mimetype='image/jpeg')
+#     else:
+#         return jsonify({'error': 'Image not found'}), 404
+    
+
+@bp.route('/get_all_images', methods=['GET'])
+def get_all_images():
+    try:
+        images = Image.query.all()
+        
+        if not images:
+            return jsonify({'message': 'No images found'}), 404
+
+    
+        images_data = []
+        for image in images:
+            images_data.append({
+                'image_id': image.id,
+                'filename': image.filename,
+            })
+
+        return jsonify({'images': images_data}), 200
+
+    except Exception as e:
+
+        return jsonify({'error': str(e)}), 500
