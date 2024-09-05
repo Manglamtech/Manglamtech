@@ -31,8 +31,8 @@ def registration():
                 return jsonify({"message": "User already exists"}), 400
             else:
                 hashed_password= bcrypt.hashpw(
-                    password.encode("utf-8","ignore"),bcrypt.gensalt()
-                )
+                    password.encode("utf-8","ignore"),bcrypt.gensalt(14)
+                ).decode("utf-8")
 
                 if User.create_user(
                     {

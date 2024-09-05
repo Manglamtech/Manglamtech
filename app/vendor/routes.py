@@ -38,7 +38,8 @@ def vendor_registration():
             else:
                 hashed_password= bcrypt.hashpw(
                     password.encode("utf-8","ignore"),bcrypt.gensalt()
-                )
+                ).decode("utf-8")
+
 
             
                 if VENDOR.create_vendor(
