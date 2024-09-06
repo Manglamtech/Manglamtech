@@ -9,6 +9,7 @@ from app.auth.routes import token_required,secret_key
 import jwt
 import datetime
 from datetime import datetime
+from datetime import datetime, timedelta
 
 
 
@@ -47,11 +48,15 @@ def get_pendingorder():
     # cs_id= token["id"]
 
 
-     
+    seven_days_ago = datetime.now() - timedelta(days=7)
     # user = User.query.get(cs_id)
     orders=Pendingorder.query.all()
     output=[]
     for order in orders:
+        order_datetime = datetime.strptime(f"{order.date} {order.time}", '%Y-%m-%d %H:%M')
+        if order_datetime < seven_days_ago:
+            db.session.delete(order)
+            continue
         customer = User.query.get(order.customer_id)
         if customer:
             customer_data = customer.to_dict()
@@ -72,6 +77,8 @@ def get_pendingorder():
 
         }
         output.append(order_data)
+    db.session.commit()
+
     return jsonify({'notifications': output})
 
 
@@ -144,3 +151,4 @@ def get_past_events():
 
     except Exception as e:
         return jsonify({"status": "Failed", "message": str(e)}), 500
+    
