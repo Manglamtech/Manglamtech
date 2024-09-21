@@ -197,7 +197,15 @@ def edit_customer_profile():
             user.full_address = data.get("full_address", user.full_address)
         if data.get("pincode") is not None:
             user.pincode = data.get("pincode", user.pincode)
-        # user.password=data.get("password",user.password)
+        if data.get("password") is not None:
+            password = data.get("password")
+            hashed_password = bcrypt.hashpw(
+                password.encode("utf-8", "ignore"),
+                bcrypt.gensalt()
+            ).decode("utf-8")
+            user.password = hashed_password
+            
+        
         user.lastupdated=current_date
         try:
             db.session.commit()
