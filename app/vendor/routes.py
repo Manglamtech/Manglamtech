@@ -202,19 +202,26 @@ def get_profile_data():
     vendor=VENDOR.query.get(vendor_id)
     if vendor:
         data=request.get_json()
-        if data.get("organization_name") is not None:
+        if data.get("organization_name") != "":
             vendor.organization_name=data.get("organization_name",vendor.organization_name)
-        if data.get("person_name") is not None:
+        if data.get("person_name") != "":
             vendor.person_name=data.get("person_name",vendor.person_name)
-        if data.get("full_address") is not None:
+        if data.get("full_address") != "":
             vendor.full_address=data.get("full_address",vendor.full_address)
-        if data.get("email_id") is not None:
+        if data.get("email_id") != "":
             vendor.email_id=data.get("email_id",vendor.email_id)
-        if data.get("phone_no") is not None:
+        if data.get("phone_no") != "":
             vendor.phone_no=data.get("phone_no",vendor.phone_no)
-        if data.get("gst_no") is not None:   
+        if data.get("gst_no") != "":   
             vendor.gst_no=data.get("gst_no",vendor.gst_no)
-
+        if data.get("password") != "":
+            password = data.get("password")
+            hashed_password = bcrypt.hashpw(
+                password.encode("utf-8", "ignore"),
+                bcrypt.gensalt()
+            ).decode("utf-8")
+            vendor.password = hashed_password
+        
         try:
             db.session.commit()
             return jsonify({"message": "Vendor updated successfully"}), 200

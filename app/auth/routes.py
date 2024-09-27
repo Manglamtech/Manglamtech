@@ -9,10 +9,14 @@ import jwt
 import bcrypt
 import datetime
 from . import bp
+from dotenv import load_dotenv
+import os
 
-secret_key="this is secret"
+load_dotenv()
+secret_key = os.getenv("SECRET_KEYS")
+# secret_key="this is secret"
 app = Flask(__name__)
-app.config['secret_key'] = "this is secret"
+app.config['secret_key'] = secret_key
 serializer = URLSafeTimedSerializer(app.config['secret_key'])
 
 def token_required(f):
