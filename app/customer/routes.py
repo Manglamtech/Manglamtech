@@ -187,25 +187,23 @@ def edit_customer_profile():
 
     if user:
         data=request.get_json()
-        if data.get("name") is not None:
+        if data.get("name") != "":
             user.name = data.get("name", user.name)
-        if data.get("email_id") is not None:
+        if data.get("email_id") != "":
             user.email_id = data.get("email_id", user.email_id)
-        if data.get("phone_no") is not None:
+        if data.get("phone_no") != "":
             user.phone_no = data.get("phone_no", user.phone_no)
-        if data.get("full_address") is not None:
+        if data.get("full_address") != "":
             user.full_address = data.get("full_address", user.full_address)
-        if data.get("pincode") is not None:
+        if data.get("pincode") != "":
             user.pincode = data.get("pincode", user.pincode)
-        if data.get("password") is not None:
+        if data.get("password") != "":
             password = data.get("password")
             hashed_password = bcrypt.hashpw(
                 password.encode("utf-8", "ignore"),
                 bcrypt.gensalt()
             ).decode("utf-8")
             user.password = hashed_password
-            
-        
         user.lastupdated=current_date
         try:
             db.session.commit()

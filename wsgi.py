@@ -25,14 +25,19 @@ from app.packages import bp as package_bp
 from app.notification import bp as notification_bp
 from app.pendingorder import bp as pending_bp
 from app.feedbox import bp as feedbox_bp
+from dotenv import load_dotenv
+import os
 
 
+load_dotenv()
 app =  Flask(__name__)
-app.secret_key = "your_secret_key"
+app.secret_key = os.getenv("SECRET_KEY")
+# app.secret_key = "your_secret_key"
 CORS(app)
 
 def create_app():
-    app.config["SQLALCHEMY_DATABASE_URI"]= "postgresql://postgres:shivanichauhan@localhost:5000/app"
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    # app.config["SQLALCHEMY_DATABASE_URI"]= "postgresql://postgres:shivanichauhan@localhost:5000/app"
    
     
     db.init_app(app)
@@ -88,4 +93,4 @@ def create_app():
 
 if __name__ == '__main__':
     create_app()
-    app.run(debug=True,port =5001)
+    app.run(host="0.0.0.0", debug=True,port =5001)
