@@ -24,7 +24,6 @@ def add_rating():
     rating = data.get('rating')
     customer_id=cs_id
 
-    print()
 
     if not vendor_id or not customer_id or rating is None:
         return jsonify({'error': 'Missing required fields'}), 400
