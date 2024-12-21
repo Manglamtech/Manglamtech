@@ -33,6 +33,6 @@ def get_themeanddecore(service):
             }
             output.append(themedecore_data)
         
-        return jsonify({'foodAndCatering': output})
+        return jsonify({'themeanddecore': output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

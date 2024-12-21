@@ -2,6 +2,7 @@ from . import bp
 from app.model.pandingorder import Pendingorder
 from app.model.notification import Notification
 from app.model.customer import User
+from app.model.vendor import VENDOR
 from database.database import db
 from flask import request,jsonify
 from sqlalchemy.exc import IntegrityError
@@ -69,7 +70,7 @@ def get_pendingorder():
             "enter_preferences":order.enter_preferences,
             "phone_no":order.phone_no,
             "city":order.city,
-            " date":order.date,
+            "date":order.date,
             "time":order.time,
             "customer_id":order.customer_id,
             "created_by":customer_data
@@ -152,3 +153,71 @@ def get_past_events():
     except Exception as e:
         return jsonify({"status": "Failed", "message": str(e)}), 500
     
+
+
+
+
+@bp.route("/pendingorder", methods=["GET"], endpoint="pending_order")
+@token_required
+def get_pendingorder():
+    auth_header = request.headers.get('Authorization')
+    payload=auth_header.split(" ")[1]
+        # print(payload)
+    token = jwt.decode(payload, secret_key, algorithms=['HS256'])
+        # print(token)
+    vendor_id= token["id"]
+    # print(vendor_id)
+
+    print(vendor_id)
+    if not vendor_id:
+        return jsonify({"error": "vendor_id is required"}), 400
+    # vendor = VENDOR.query.get(vendor_id)
+    # if not vendor:
+    #     return jsonify({"error": "Vendor not found"}), 404
+
+    seven_days_ago = datetime.now() - timedelta(days=7)
+
+    # Fetch pending orders for the specified vendor
+    orders = Pendingorder.query.filter_by(vendor_id=vendor_id).all()
+    print(orders)
+    output = []
+
+    for order in orders:
+        print(order)
+        try:
+            # Parse order date and time
+            order_datetime = datetime.strptime(f"{order.date} {order.time}", '%Y-%m-%d %H:%M')
+        except ValueError:
+            # Skip invalid date or time
+            db.session.delete(order)
+            continue
+
+        # Remove orders older than 7 days
+        if order_datetime < seven_days_ago:
+            db.session.delete(order)
+            continue
+
+        # Fetch associated customer details
+        customer = User.query.get(order.customer_id)
+        customer_data = customer.to_dict() if customer else None
+
+        # Prepare order data
+        order_data = {
+            "id": order.id,
+            "event_type": order.event_type,
+            "address": order.address,
+            "enter_preferences": order.enter_preferences,
+            "phone_no": order.phone_no,
+            "city": order.city,
+            "date": order.date,
+            "time": order.time,
+            "customer_id": order.customer_id,
+            "vendor_id":order.vendor_id,
+            "created_by": customer_data
+        }
+        output.append(order_data)
+
+    # Commit all database changes at once
+    db.session.commit()
+
+    return jsonify({'notifications': output})

@@ -36,8 +36,8 @@ app.secret_key = os.getenv("SECRET_KEY")
 CORS(app)
 
 def create_app():
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-    # app.config["SQLALCHEMY_DATABASE_URI"]= "postgresql://postgres:shivanichauhan@localhost:5000/app"
+    # app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+    app.config["SQLALCHEMY_DATABASE_URI"]= "postgresql://postgres:shivanichauhan@localhost:5000/app"
    
     
     db.init_app(app)

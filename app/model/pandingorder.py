@@ -11,6 +11,7 @@ class Pendingorder(db.Model):
     date=db.Column(db.String(60))
     time=db.Column(db.String(60))
     customer_id=db.Column(db.BigInteger())
+    vendor_id=db.Column(db.BigInteger())
     status = db.Column(db.Boolean)
 
     def to_dict(self):
@@ -24,8 +25,8 @@ class Pendingorder(db.Model):
             " date":self.date,
             "time":self.time,
             "customer_id":self.customer_id,
-            "status": self.status
-
+            "status": self.status,
+            "vendor_id":self.status
 
         }
 

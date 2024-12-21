@@ -11,6 +11,7 @@ class Notification(db.Model):
     date=db.Column(db.String(60), nullable=False)
     time=db.Column(db.String(60), nullable=False)
     customer_id=db.Column(db.BigInteger())
+    vendor_id=db.Column(db.BigInteger(),db.ForeignKey("vendor.id"))
   
     def to_dict(self):
         return{
@@ -22,7 +23,8 @@ class Notification(db.Model):
             "city":self.city,
             " date":self.date,
             "time":self.time,
-            "customer_id":self.customer_id
+            "customer_id":self.customer_id,
+            "vendor_id":self.vendor_id
 
 
 

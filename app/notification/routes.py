@@ -30,6 +30,7 @@ def get_notification():
             city=order_data.get("city"),
             date=order_data.get("date"),
             time=order_data.get("time"),
+            vendor_id=order_data.get("vendor_id"),
             customer_id=cs_id,
         )
         db.session.add(entry)
@@ -55,6 +56,7 @@ def update_order_status():
 
         if status:
             pending_order = Pendingorder(
+                vendor_id=notification.vendor_id, 
                 event_type=notification.event_type,
                 address=notification.address,
                 enter_preferences=notification.enter_preferences,

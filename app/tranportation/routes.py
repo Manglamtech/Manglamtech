@@ -3,6 +3,8 @@ from app.model.vendor import VENDOR
 from database.database import db
 from flask import request,jsonify
 from app.model.rating import Rating
+# from gtts import gTTS
+import os
 
 
 @bp.route('/transportation/<string:service>', methods=['GET'])
@@ -41,5 +43,27 @@ def get_transportation(service):
         return jsonify({'transportation': output})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# @bp.route("/script", methods=["GET"])
+# def generate_scripts():
+#     scripts_list = []
+#     audio_files = []
     
-    
+#     vendors = VENDOR.query.all()  # Fetch all vendors
+
+#     for vendor in vendors:
+#         # Append the script for each vendor's name
+#         script = f"नमस्कार {vendor.person_name} जी। आपका वोट सिर्फ किसी को पराजित करने के लिए नहीं है, आपका वोट भारत के भाग्य को बदलने के लिए है।"
+#         scripts_list.append(script)
+
+#          # Generate audio file
+#         audio_filename = f"{vendor.person_name}_greeting.mp3"
+#         tts = gTTS(text=script, lang="hi", slow=False)
+#         tts.save(audio_filename)
+#         audio_files.append(audio_filename)
+#         print(f"Audio saved as {audio_filename}")
+
+#     # return {"scripts": scripts_list}
+#     return jsonify({"scripts": scripts_list, "audio_files": audio_files})
+

@@ -18,7 +18,8 @@ class VENDOR(db.Model):
     # events= db.relationship("EVENT",backref="vendor",lazy=True,)
     bookings = db.relationship("Booking",backref="vendor",lazy=True,)
     rating=db.relationship("Rating",backref="vendor",lazy=True,)
-    wishlist=db.relationship("WishlistItem",backref="vendor",lazy=True)
+    wishlist=db.relationship("WishlistItem",backref="vendor",lazy=True,)
+    notification=db.relationship("Notification",backref="vendor",lazy=True,)
     
 
     def __init__(self,organization_name,person_name,full_address,email_id,password,phone_no,service,location,gst_no,district,state):
